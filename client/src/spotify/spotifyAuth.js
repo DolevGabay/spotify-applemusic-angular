@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const CLIENT_ID = '3a13037db50d41c2bdb86e08ae7758be';
-const REDIRECT_URI = 'http://localhost:3000/spotify';
+const REDIRECT_URI = 'http://localhost:8080/spotify';
 const SCOPES = 'playlist-read-private playlist-read-collaborative user-read-email';
 
 function generateRandomString(length) {

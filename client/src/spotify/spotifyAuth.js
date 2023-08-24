@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const CLIENT_ID = '3a13037db50d41c2bdb86e08ae7758be';
 const REDIRECT_URI = 'http://localhost:8080/spotify';
-const SCOPES = 'playlist-read-private playlist-read-collaborative user-read-email';
+const SCOPES = 'user-read-private user-read-email playlist-read-private playlist-read-collaborative user-library-read user-top-read user-read-recently-played user-follow-read user-follow-modify user-read-playback-state user-modify-playback-state user-read-playback-position user-read-currently-playing playlist-read-private playlist-modify-private playlist-modify-public';
 
 function generateRandomString(length) {
     let text = '';

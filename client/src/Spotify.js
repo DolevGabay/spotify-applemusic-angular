@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
+import ShowPlaylists from './ShowPlaylists';
 
 const Spotify = () => {
     const location = useLocation();
@@ -12,7 +13,19 @@ const Spotify = () => {
     const codeVerifier = localStorage.getItem('code_verifier');
 
     const [userProfile, setUserProfile] = useState(null);
-    const [userPlaylists, setUserPlaylists] = useState(null);
+    const [userPlaylists, setUserPlaylists] = useState({
+        "items": [
+            {
+                "name": "Playlist 1"
+            },
+            {
+                "name": "Playlist 2"
+            },
+            {
+                "name": "Playlist 3"
+            }
+        ]
+    });
 
     const startFunction = () => {
         let body = new URLSearchParams({
@@ -38,7 +51,6 @@ const Spotify = () => {
         })
         .then(data => {
             localStorage.setItem('access_token', data.access_token);
-            alert(data.access_token)
             getProfile(data.access_token);
         })
         .catch(error => {
@@ -129,21 +141,7 @@ const Spotify = () => {
 
     return (
         <div>
-            <h1>Spotify</h1>
-            {userProfile && (
-                <div>
-                    <h2>User Profile</h2>
-                    <p>Name: {userProfile.display_name}</p>
-                    <p>Email: {userProfile.email}</p>
-                </div>
-            )}
-            <div>
-            <h2>User Playlists</h2>
-            {userPlaylists && userPlaylists.items.map((playlist, index) => (
-                <p key={index}>Playlist {index + 1}: {playlist.name}</p>
-            ))}
-            </div>
-
+            <ShowPlaylists userProfile={userProfile} userPlaylists={userPlaylists}/>
             <button onClick={refreshToken}>Refresh Token</button>
             <button onClick={getUserPlaylists}>get playlists</button>
         </div>

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const CLIENT_ID = '3a13037db50d41c2bdb86e08ae7758be';
+const CLIENT_ID = '19fa87bff4c74ef79f1a8af8608d1d87';
 const REDIRECT_URI = 'http://localhost:8080/spotify';
 const SCOPES = 'user-read-private user-read-email playlist-read-private playlist-read-collaborative user-library-read user-top-read user-read-recently-played user-follow-read user-follow-modify user-read-playback-state user-modify-playback-state user-read-playback-position user-read-currently-playing playlist-read-private playlist-modify-private playlist-modify-public';
 
@@ -49,6 +49,40 @@ async function spotifyAuth() {
     window.location = 'https://accounts.spotify.com/authorize?' + args;
 }
 
+async function fetchAuthCode(code) {
+    let codeVerifier = localStorage.getItem('code_verifier');
+    let body = new URLSearchParams({
+      grant_type: 'authorization_code',
+      code: code,
+      redirect_uri: REDIRECT_URI,
+      client_id: CLIENT_ID,
+      code_verifier: codeVerifier
+    });
+
+    const response = fetch('https://accounts.spotify.com/api/token', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: body})
+    .then(response => {
+        if (!response.ok) {
+        throw new Error('HTTP status ' + response.status);
+        }
+        return response.json();
+    })
+    .then(data => {
+        localStorage.setItem('access_token', data.access_token);
+        console.log(data.access_token);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+
+    return response;
+}
+
+export { fetchAuthCode };
 export default spotifyAuth;
 
 

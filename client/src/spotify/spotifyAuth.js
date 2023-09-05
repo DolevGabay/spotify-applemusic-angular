@@ -73,7 +73,7 @@ async function fetchAuthCode(code) {
     })
     .then(data => {
         localStorage.setItem('access_token', data.access_token);
-        console.log(data.access_token);
+        //console.log(data.access_token);
     })
     .catch(error => {
         console.error('Error:', error);

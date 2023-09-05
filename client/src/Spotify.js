@@ -29,7 +29,7 @@ const Spotify = () => {
         if (!accessToken) {
             console.log('here')
             await fetchAuthCode(code);
-            console.log(`good: ${localStorage.getItem('access_token')}`)
+            //console.log(`good: ${localStorage.getItem('access_token')}`)
             accessToken = localStorage.getItem('access_token');
             const data = await getProfile(accessToken);
             getUserPlaylists();
@@ -49,7 +49,7 @@ const Spotify = () => {
     }
     
     const getUserPlaylists = async () => {
-        console.log(`accessToken: ${accessToken} for getUserPlaylists`);
+       // console.log(`accessToken: ${accessToken} for getUserPlaylists`);
         const response = await fetch('https://api.spotify.com/v1/me/playlists', {
           headers: {
             Authorization: 'Bearer ' + accessToken
@@ -58,9 +58,10 @@ const Spotify = () => {
       
         const data = await response.json();
         setUserPlaylists(data);
-        console.log(data);
+        //console.log(data);
         return data;
     };
+
 
     useEffect(() => {
         console.log('Spotify component mounted');

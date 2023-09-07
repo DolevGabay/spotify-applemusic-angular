@@ -172,27 +172,29 @@ function ShowPlaylists({userProfile, userPlaylists }) {
                 )}
         </div>
         <div className="playlist-container">
-        <h2 className="playlist-header">Playlists</h2>
-        <label>
+        <h2 className="playlist-header"></h2>
+        <label className="choose-all-label">
             <input
-            type="checkbox"
-            checked={selectAll}
-            onChange={handleSelectAll}
+                type="checkbox"
+                checked={selectAll}
+                onChange={handleSelectAll}
+                className="choose-all-checkbox"
             /> Choose All
         </label>
-        <ul>
+        <ul className="playlist-cards">
             {userPlaylists.items.map((playlist, index) => (
-            <li key={index} className="playlist-item">
-                <label>
-                <input
-                    type="checkbox"
-                    checked={selectedPlaylists.includes(index)}
-                    onChange={() => handleCheckboxChange(index)}
-                />
-                <h3 className="playlist-title">{playlist.name}</h3>
-                
-                </label>
-            </li>
+                <li key={index} className={`playlist-card ${selectedPlaylists.includes(index) ? 'selected' : ''}`}>
+                    <div className="card-content" onClick={() => handleCheckboxChange(index)}>
+                        {playlist.images && playlist.images.length > 0 && (
+                            <img
+                                src={playlist.images[0].url}
+                                alt={`${playlist.name} Image`}
+                                className="playlist-image"
+                            />
+                        )}
+                        <h3 className="playlist-title">{playlist.name}</h3>
+                    </div>
+                </li>
             ))}
         </ul>
         <button onClick={handlePrintSelected}>Submit</button>

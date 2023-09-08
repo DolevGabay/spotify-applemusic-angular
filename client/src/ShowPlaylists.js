@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import "./ShowPlaylists.css"; 
 import axios from 'axios';
+import NotificationPopup from './NotificationPopup';
 
 
 function ShowPlaylists({userProfile, userPlaylists }) {
   const [selectedPlaylists, setSelectedPlaylists] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
   let insertFromSpotify = []; // change to useState
+  const [showPopup, setShowPopup] = useState(false);
 
   const handleSelectAll = () => {
     if (selectAll) {
@@ -68,7 +70,7 @@ function ShowPlaylists({userProfile, userPlaylists }) {
           };
         insertFromSpotify[index].songs.push(newSong);
     }
-    console.log(insertFromSpotify)
+    //console.log(insertFromSpotify)
   };
 
   const insertPlaylistToSpotify = async (insertToSpotify) => {
@@ -135,32 +137,73 @@ function ShowPlaylists({userProfile, userPlaylists }) {
     }
 
     if (allTracksAdded) {
-        window.alert('Playlist move completed successfully!');
+        setShowPopup(true);
+        setTimeout(() => {
+            setShowPopup(false);
+        }, 3000);
     }
 };
 
-  const findSongUri = async (songName, artistName) => {
+const findSongUri = async (songName, artistName) => {
     try {
-        const query = `track:${encodeURIComponent(songName)} artist:${encodeURIComponent(artistName)}`;
-        const response = await fetch(`https://api.spotify.com/v1/search?q=${query}&type=track`, {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-          }
+        const initialQuery = `track:${encodeURIComponent(songName)} artist:${encodeURIComponent(artistName)}`;
+        const response = await fetch(`https://api.spotify.com/v1/search?q=${initialQuery}&type=track`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+            }
         });
-    
+
         if (!response.ok) {
-          throw new Error('HTTP status ' + response.status);
+            throw new Error('HTTP status ' + response.status);
         }
-    
+
         const data = await response.json();
-        //console.log(data.tracks.items[0].uri) // This will contain a list of tracks matching the search query.
-        return(data.tracks.items[0].uri);
-      } catch (error) {
+        console.log(data);
+
+        const items = data.tracks.items;
+
+        if (items.length > 0) {
+            const uri = items[0].uri;
+            console.log("URI found:", uri);
+            return uri;
+        } else {
+            console.log("No URI found for the given query. Retrying without artist.");
+
+            // Retry the search without the artist
+            const retryQuery = `track:${encodeURIComponent(songName)}`;
+            const retryResponse = await fetch(`https://api.spotify.com/v1/search?q=${retryQuery}&type=track`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+                }
+            });
+
+            if (!retryResponse.ok) {
+                throw new Error('HTTP status ' + retryResponse.status);
+            }
+
+            const retryData = await retryResponse.json();
+            console.log(retryData);
+
+            const retryItems = retryData.tracks.items;
+
+            if (retryItems.length > 0) {
+                const retryUri = retryItems[0].uri;
+                console.log("URI found (retry):", retryUri);
+                return retryUri;
+            } else {
+                console.log("No URI found for the retry query either.");
+                alert(songName + " not found");
+                return null; // Or you can return some default value to indicate no URI was found.
+            }
+        }
+    } catch (error) {
         console.error('Error:', error);
         throw error;
-      }
-  };
+    }
+};
+
 
   return (
     <div>
@@ -197,7 +240,8 @@ function ShowPlaylists({userProfile, userPlaylists }) {
                 </li>
             ))}
         </ul>
-        <button onClick={handlePrintSelected}>Submit</button>
+        <button onClick={handlePrintSelected}>Transfer</button>
+        <NotificationPopup show={showPopup} />
         </div>
     </div>
   );

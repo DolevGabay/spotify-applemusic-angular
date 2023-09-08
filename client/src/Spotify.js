@@ -58,7 +58,7 @@ const Spotify = () => {
       
         const data = await response.json();
         setUserPlaylists(data);
-        console.log(data.items[0].images[0].url);
+        //console.log(data.items[0].images[0].url);
         return data;
     };
 

@@ -1,13 +1,13 @@
 .header {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 1%;
+    margin-top: 1%;
   }  
 
 .playlist-container {
     max-width: 400px;
     margin: 0 auto;
     padding: 20px;
-    
   }
   
   .playlist-header {
@@ -114,5 +114,38 @@
 .choose-all-checkbox {
     margin-right: 8px;
 }
+
+/* Styles for the notification pop-up */
+.notification-popup {
+    display: none;
+}
+
+.notification-popup.show {
+    display: block;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: floralwhite; /* Green background */
+    color: green;
+    padding: 5%;
+    border-radius: 5%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.notification-content {
+    font-size: 150%;
+    display: flex;
+    align-items: center;
+}
+
+.notification-icon {
+    font-size: 200%;
+    margin-right: 10px;
+}
+
+/* Additional styles as needed */
+
 
 

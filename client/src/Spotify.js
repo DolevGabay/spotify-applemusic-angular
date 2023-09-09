@@ -27,7 +27,6 @@ const Spotify = () => {
 
     const startFunction = async () => {
         if (!accessToken) {
-            console.log('here')
             await fetchAuthCode(code);
             //console.log(`good: ${localStorage.getItem('access_token')}`)
             accessToken = localStorage.getItem('access_token');
@@ -64,7 +63,6 @@ const Spotify = () => {
 
 
     useEffect(() => {
-        console.log('Spotify component mounted');
         startFunction();
     }, []);
 

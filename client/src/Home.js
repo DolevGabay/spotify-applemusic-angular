@@ -2,7 +2,7 @@ import React from 'react';
 import spotifyAuth from './spotify/spotifyAuth';
 import PostMalone from './assets/postmalone.jpeg';
 import TheWeeknd from './assets/theweeknd.jpeg';
-
+import { token } from './spotify/appleAuth';
 
 const Home = () => {
 
@@ -10,6 +10,10 @@ const Home = () => {
         spotifyAuth();
         console.log('Spotify login');
     };
+
+    const onAppleLogin = () => {
+        window.location.href = 'http://localhost:8888/generate-token';
+      };
 
     return(
         <div>
@@ -61,7 +65,7 @@ const Home = () => {
                                     <h5 className="fw-bold card-title mb-3">
                                         Login to your Apple music account to begin
                                     </h5>
-                                    <button className="btn btn-secondary btn-sm" type="button">
+                                    <button className="btn btn-secondary btn-sm" type="button" onClick={ onAppleLogin }>
                                         Connect Apple Music
                                     </button>
                                     </div>

@@ -17,10 +17,8 @@ const Contact = () => {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    // You can add your logic here to handle the form submission
-    console.log('Form data submitted:', formData);
   };
+
 
   return (
     <div className="contact">

@@ -4,6 +4,8 @@ import Navbar from './Navbar';
 import Home from './Home';
 import Spotify from './Spotify';
 import Contact from './Contact';
+import Apple from './Apple';
+
 const App = () => {
     return (
         <div>
@@ -13,6 +15,7 @@ const App = () => {
                <Route path="/" element={<Home />} />
                <Route path="/spotify" element={<Spotify />} />
                <Route path="/Contact" element={<Contact />} />
+               <Route path="/Apple" element={<Apple />} />
             </Routes>
         </BrowserRouter>
         </div>

@@ -1,50 +1,50 @@
 const express = require('express');
-const dotenv = require('dotenv');
-
-dotenv.config({path: './config/config.env'});
+const jwt = require('jsonwebtoken');
+const fs = require('fs');
+const crypto = require('crypto');
 
 const app = express();
+const port = process.env.PORT || 8888;
 
-app.get('/', (req, res) => {
-    res.send('Server running');
+app.use(express.json());
+
+// Enable CORS
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
 });
 
-app.get('/spotify', async (req, res) => {
-    const { code, state } = req.query;
-    console.log(code + " + " + state)
+// Read your private key from a file
+const private_key = fs.readFileSync('AuthKey_FL3PM9DXWX.p8').toString();
+const team_id = 'A4VBZCQY97';
+const key_id = 'FL3PM9DXWX';
 
-    if (!code || !state) {
-        return res.status(400).send('Missing code or state');
-    }
+// Define your expected key for authentication
+const token_key = crypto.randomBytes(32).toString('hex');
+console.log(token_key)
 
-    try {
-        const tokenResponse = await axios({
-            method: 'post',
-            url: 'https://accounts.spotify.com/api/token',
-            params: {
-                grant_type: 'authorization_code',
-                code: code,
-                redirect_uri: process.env.REDIRECT_URI, // Use your registered redirect URI
-                code_verifier: req.session.codeVerifier, // Retrieve this from where you stored it
-            },
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: `Basic ${Buffer.from(
-                    `${process.env.CLIENT_ID}:${process.env.CLIENT_SECRET}`
-                ).toString('base64')}`,
-            },
-        });
+// Generate Apple Music Token
+const generateAppleMusicToken = () => {
+  const token = jwt.sign({}, private_key, {
+    algorithm: 'ES256',
+    expiresIn: '180d',
+    issuer: team_id,
+    header: {
+      alg: 'ES256',
+      kid: key_id,
+    },
+  });
+  return token;
+};
 
-        // tokenResponse.data.access_token contains the access token
-        // tokenResponse.data.refresh_token contains the refresh token
+app.get('/generate-token', (req, res) => {
+      const appleMusicToken = generateAppleMusicToken();
+      //localStorage.setItem('apple_dev_token', appleMusicToken);
+      const redirectUrl = `http://localhost:8080/Apple?token=${appleMusicToken}`;
+      res.redirect(redirectUrl); 
+  });
+  
 
-        res.send('Authorization successful!');
-    } catch (error) {
-        console.error('Error exchanging code for token:', error.message);
-        res.status(500).send('Internal Server Error');
-    }
-});
-
-const port = process.env.PORT || 5000;
-
-app.listen(port, () => console.log(`Server running  in ${process.env.NODE_ENV} on port ${port}`));
+console.log(`Listening on port ${port}. Go to /generate-token?key=YOUR_KEY to initiate the token generation.`);
+app.listen(port);

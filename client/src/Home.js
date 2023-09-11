@@ -12,7 +12,7 @@ const Home = () => {
     };
 
     const onAppleLogin = () => {
-        window.location.href = 'http://localhost:8888/generate-token';
+        window.location.href = 'http://localhost:8080/Apple';
       };
 
     return(

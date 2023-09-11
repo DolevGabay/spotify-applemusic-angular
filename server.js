@@ -1,50 +1,40 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
+const cors = require('cors');
 const fs = require('fs');
 const crypto = require('crypto');
 
-const app = express();
-const port = process.env.PORT || 8888;
 
+const app = express();
+
+app.use(cors());
 app.use(express.json());
 
-// Enable CORS
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  next();
-});
-
-// Read your private key from a file
-const private_key = fs.readFileSync('AuthKey_FL3PM9DXWX.p8').toString();
-const team_id = 'A4VBZCQY97';
-const key_id = 'FL3PM9DXWX';
-
-// Define your expected key for authentication
-const token_key = crypto.randomBytes(32).toString('hex');
-console.log(token_key)
+const port = process.env.PORT || 8888;
+const PRIVATE_KEY = fs.readFileSync('AuthKey_FL3PM9DXWX.p8').toString();
+const TEAM_ID = 'A4VBZCQY97';
+const KEY_ID = 'FL3PM9DXWX';
 
 // Generate Apple Music Token
-const generateAppleMusicToken = () => {
-  const token = jwt.sign({}, private_key, {
-    algorithm: 'ES256',
-    expiresIn: '180d',
-    issuer: team_id,
-    header: {
-      alg: 'ES256',
-      kid: key_id,
-    },
+const generateToken = () => {
+  const claims = {
+    iss: TEAM_ID,
+    iat: Math.floor(Date.now() / 1000),
+    exp: Math.floor(Date.now() / 1000) + (86400 * 180)
+  };
+
+  return jwt.sign(claims, PRIVATE_KEY, {
+      algorithm: 'ES256',
+      header: {
+        alg: 'ES256',
+        kid: KEY_ID
+      }
   });
-  return token;
-};
+}
 
 app.get('/generate-token', (req, res) => {
-      const appleMusicToken = generateAppleMusicToken();
-      //localStorage.setItem('apple_dev_token', appleMusicToken);
-      const redirectUrl = `http://localhost:8080/Apple?token=${appleMusicToken}`;
-      res.redirect(redirectUrl); 
+      res.send({ token: generateToken() });
   });
   
-
 console.log(`Listening on port ${port}. Go to /generate-token?key=YOUR_KEY to initiate the token generation.`);
 app.listen(port);

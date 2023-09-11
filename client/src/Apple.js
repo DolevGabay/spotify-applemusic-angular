@@ -4,16 +4,13 @@ import { apple_auth } from './spotify/apple-provider'
 
 const Apple = () => {
 
-    const startFunction = async () => {
+    const startFunction = async (token) => {
         const apiEndpoint = 'https://api.music.apple.com/v1/me/library/playlists';
-        const currentUrl = window.location.href;
-        const tokenStartIndex = currentUrl.indexOf('token=');
-        const tokenEndIndex = currentUrl.indexOf('&', tokenStartIndex);
-        const token = currentUrl.slice(tokenStartIndex + 6, tokenEndIndex);
         const headers = "";
 
         try {
         // Configure MusicKit and log in
+        console.log(token)
         await apple_auth.configure(token);
         await apple_auth.LogIn();
         console.log('Logged in successfully.');
@@ -44,7 +41,13 @@ const Apple = () => {
     };
 
     useEffect(() => {
-        startFunction();
+        axios.get('http://localhost:8888/generate-token').then(res => {
+            startFunction(res.data.token);
+
+        }).catch(error => {
+            console.log('error fetching developer token');
+        });
+        console.log('test')
     }, []);
 
     return (

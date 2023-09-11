@@ -20,7 +20,7 @@ const Apple = () => {
         console.log('MusicKit instance:', musicKitInstance);
 
         // Create headers
-        const headers = apple_auth.getHeader(token);
+        const headers = await apple_auth.getHeader(token);
         console.log('Headers:', headers);
         } catch (error) {
         console.error('An error occurred:', error);

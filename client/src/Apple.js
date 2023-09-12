@@ -47,6 +47,23 @@ const Apple = () => {
         await apple_auth.LogIn();
         console.log('Logged in successfully.');
 
+<<<<<<< HEAD
+        // Retrieve MusicKit instance
+        const musicKitInstance = apple_auth.getMusicInstance();
+        console.log('MusicKit instance:', musicKitInstance);
+
+        // Create headers
+        const headers = await apple_auth.getHeader(token);
+        console.log('Headers:', headers);
+        } catch (error) {
+        console.error('An error occurred:', error);
+        }
+
+
+        axios.get(apiEndpoint, { headers })
+        .then(response => {
+            // Handle the response data (user playlists)
+=======
         headers = apple_auth.getHeader(token);
         await headers.then((value) => {
             resolvedValue = value;
@@ -56,6 +73,7 @@ const Apple = () => {
         
           axios.get(apiEndpoint, { headers: { ...resolvedValue } })
           .then(response => {
+>>>>>>> a75a70f5b848c931c517443076a0f8aacd14d857
             const playlists = response.data.data;
             //console.log('User Playlists:', playlists);
             

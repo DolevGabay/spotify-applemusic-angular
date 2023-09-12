@@ -12,7 +12,7 @@ const getPlaylistToSpotify = (selectedPlaylists) => {
 }
 
 const getSongsFromPlaylist = async (playlistHref) => {
-    //console.log(resolvedValue)
+    console.log(resolvedValue)
     try {
         
         // Make a GET request to the playlist's API endpoint

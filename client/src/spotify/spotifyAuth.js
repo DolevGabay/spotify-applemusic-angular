@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 const CLIENT_ID = '19fa87bff4c74ef79f1a8af8608d1d87';
 let REDIRECT_URI = 'http://localhost:8080/spotify';
 const SCOPES = 'user-read-private user-read-email playlist-read-private playlist-read-collaborative user-library-read user-top-read user-read-recently-played user-follow-read user-follow-modify user-read-playback-state user-modify-playback-state user-read-playback-position user-read-currently-playing playlist-read-private playlist-modify-private playlist-modify-public';
@@ -29,23 +27,21 @@ async function generateCodeChallenge(codeVerifier) {
     return base64encode(digest);
 }
   
-async function spotifyAuth(whereToRedirect) {
-    if (whereToRedirect == "apple")
-    {
-        REDIRECT_URI = 'http://localhost:8080/Apple';
-    }
+async function spotifyAuth(redirect_uri = REDIRECT_URI, state = undefined) {
     const codeVerifier = generateRandomString(128);
     const codeChallenge = await generateCodeChallenge(codeVerifier);
-
+    let r_state = state;
     window.localStorage.setItem('code_verifier', codeVerifier);
-
-    const state = generateRandomString(16); // Recommended by Spotify
+    if (r_state === undefined)
+    {
+        r_state = generateRandomString(16); // Recommended by Spotify
+    }
     const args = new URLSearchParams({
         response_type: 'code',
         client_id: CLIENT_ID,
         scope: SCOPES,
-        redirect_uri: REDIRECT_URI,
-        state: state,
+        redirect_uri: redirect_uri,
+        state: r_state,
         code_challenge_method: 'S256',
         code_challenge: codeChallenge
     });
@@ -86,7 +82,7 @@ async function fetchAuthCode(code) {
     return response;
 }
 
-export { fetchAuthCode };
+export { fetchAuthCode, generateRandomString };
 export default spotifyAuth;
 
 

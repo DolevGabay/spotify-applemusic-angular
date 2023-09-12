@@ -5,6 +5,7 @@ import Home from './Home';
 import Spotify from './Spotify';
 import Contact from './Contact';
 import Apple from './Apple';
+import Transfer from './Transfer';
 
 const App = () => {
     return (
@@ -16,6 +17,7 @@ const App = () => {
                <Route path="/spotify" element={<Spotify />} />
                <Route path="/Contact" element={<Contact />} />
                <Route path="/Apple" element={<Apple />} />
+               <Route path="/Transfer" element={<Transfer />} />
             </Routes>
         </BrowserRouter>
         </div>

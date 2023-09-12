@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import "./ShowPlaylists.css";
 import axios from 'axios';
 import { getPlaylistToSpotify } from './Apple';
+import { generateRandomString } from './spotify/spotifyAuth';
 import spotifyAuth from './spotify/spotifyAuth';
-import {ShowPlaylists} from './ShowPlaylists'
 
 function ShowPlaylistsApple({ userProfile, userPlaylists }) {
   const [selectedPlaylists, setSelectedPlaylists] = useState([]);
@@ -36,16 +36,34 @@ function ShowPlaylistsApple({ userProfile, userPlaylists }) {
     }
     let arrayToSpotify;
     let returnedArray =  getPlaylistToSpotify(selected);
+    let state = generateRandomString();
     await returnedArray.then((value) => {
       arrayToSpotify = value;
     }).catch((error) => {
       console.error(error);
     });
-    console.log(arrayToSpotify);
-    spotifyAuth("apple");
-    //console.log("here")
-    //arrayToSpotify.insertPlaylistToSpotify(arrayToSpotify)
-    
+    //console.log(arrayToSpotify);
+    //spotifyAuth("apple");
+    fetch('http://localhost:8888/update-playlist', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ key: state, data: arrayToSpotify }),
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          // Playlist was updated successfully
+          console.log('Playlist updated successfully');
+        } else {
+          // Handle error responses
+          console.error('Failed to update the playlist');
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+    spotifyAuth('http://localhost:8080/Transfer');
   };
 
 

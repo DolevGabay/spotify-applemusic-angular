@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import "./ShowPlaylists.css";
 import axios from 'axios';
 import { getPlaylistToSpotify } from './Apple';
+import spotifyAuth from './spotify/spotifyAuth';
+import {ShowPlaylists} from './ShowPlaylists'
 
 function ShowPlaylistsApple({ userProfile, userPlaylists }) {
   const [selectedPlaylists, setSelectedPlaylists] = useState([]);
@@ -24,8 +26,26 @@ function ShowPlaylistsApple({ userProfile, userPlaylists }) {
     }
   };
 
-  const handlePrintSelected = () => {
-    getPlaylistToSpotify(userPlaylists[selectedPlaylists[0]]);
+  const handlePrintSelected = async () => {
+    let selected = [];
+    for(let i = 0 ; i < userPlaylists.length ; i++)
+    {
+      if (selectedPlaylists.includes(i)){
+        selected.push(userPlaylists[i]);
+      }
+    }
+    let arrayToSpotify;
+    let returnedArray =  getPlaylistToSpotify(selected);
+    await returnedArray.then((value) => {
+      arrayToSpotify = value;
+    }).catch((error) => {
+      console.error(error);
+    });
+    console.log(arrayToSpotify);
+    spotifyAuth("apple");
+    //console.log("here")
+    //arrayToSpotify.insertPlaylistToSpotify(arrayToSpotify)
+    
   };
 
 

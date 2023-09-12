@@ -6,25 +6,47 @@ import {getMusicInstance} from './spotify/appleAuth'
 
 let resolvedValue;  
 
-const getPlaylistToSpotify = (selectedPlaylists) => {
-    const playlistHref = "https://api.music.apple.com" + selectedPlaylists.href;
-    getSongsFromPlaylist(playlistHref)
+const getPlaylistToSpotify = async (selectedPlaylists) => {
+    const playlistsReadyToSpotify = [];
+    for(let i = 0 ; i < selectedPlaylists.length ; i++)
+    {
+        const playlistHref = "https://api.music.apple.com" + selectedPlaylists[i].href;
+        let songsInPlaylist;
+        let songsInPlaylistPromise = getSongsFromPlaylist(playlistHref)
+        await songsInPlaylistPromise.then((value) => {
+            songsInPlaylist = value;
+          }).catch((error) => {
+            console.error(error);
+          });
+
+        const onePlaylistInTemplate = {
+            name: selectedPlaylists[i].name,
+            songs: songsInPlaylist
+            ,
+          };
+          playlistsReadyToSpotify.push(onePlaylistInTemplate);
+    }
+    return playlistsReadyToSpotify;
 }
 
 const getSongsFromPlaylist = async (playlistHref) => {
-    console.log(resolvedValue)
     try {
-        
-        // Make a GET request to the playlist's API endpoint
-        const response = await axios.get(playlistHref, { resolvedValue });
+        const response = await axios.get(playlistHref + "/tracks", { headers: { ...resolvedValue } });
         if (response.status === 200) {
-            // The playlist data is in response.data
+            const arrayOfSongs = [];
             const playlistData = response.data;
-
-            // Extract the songs from the playlistData
-            const songs = playlistData.included.filter(item => item.type === 'songs');
-            
-            console.log(songs);
+            //console.log(playlistData.data)
+            for(let j = 0 ; j < playlistData.data.length ; j++)
+            {
+                let songName = playlistData.data[j].attributes.name
+                let artistName = playlistData.data[j].attributes.artistName
+                const newSong = {
+                    name: songName,
+                    artist: artistName,
+                  };
+                arrayOfSongs.push(newSong);  
+            }
+            return arrayOfSongs;
         } else {
             console.error('Error fetching playlist:', response.statusText);
             return null;
@@ -47,23 +69,6 @@ const Apple = () => {
         await apple_auth.LogIn();
         console.log('Logged in successfully.');
 
-<<<<<<< HEAD
-        // Retrieve MusicKit instance
-        const musicKitInstance = apple_auth.getMusicInstance();
-        console.log('MusicKit instance:', musicKitInstance);
-
-        // Create headers
-        const headers = await apple_auth.getHeader(token);
-        console.log('Headers:', headers);
-        } catch (error) {
-        console.error('An error occurred:', error);
-        }
-
-
-        axios.get(apiEndpoint, { headers })
-        .then(response => {
-            // Handle the response data (user playlists)
-=======
         headers = apple_auth.getHeader(token);
         await headers.then((value) => {
             resolvedValue = value;
@@ -73,7 +78,6 @@ const Apple = () => {
         
           axios.get(apiEndpoint, { headers: { ...resolvedValue } })
           .then(response => {
->>>>>>> a75a70f5b848c931c517443076a0f8aacd14d857
             const playlists = response.data.data;
             //console.log('User Playlists:', playlists);
             

@@ -7,7 +7,7 @@ import { token } from './spotify/appleAuth';
 const Home = () => {
 
     const onSpotifyLogin = () => {
-        spotifyAuth();
+        spotifyAuth("spotify");
         console.log('Spotify login');
     };
 

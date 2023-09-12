@@ -73,7 +73,7 @@ function ShowPlaylists({userProfile, userPlaylists }) {
     //console.log(insertFromSpotify)
   };
 
-  const insertPlaylistToSpotify = async (insertToSpotify) => {
+    const insertPlaylistToSpotify = async (insertToSpotify) => {
     console.log(insertToSpotify)
     for(let i = 0 ; i < insertToSpotify.length ; i++)
     {
@@ -203,6 +203,7 @@ const findSongUri = async (songName, artistName) => {
         console.error('Error:', error);
         throw error;
     }
+    
 };
 
 

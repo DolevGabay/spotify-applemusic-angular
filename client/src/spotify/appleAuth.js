@@ -24,7 +24,6 @@ export function getMusicInstance() {
     return instance.getInstance();
 }
 
-
 /**
  * Return users login status
  */
@@ -41,7 +40,6 @@ export function isLoggedIn() {
  * Authorizes a user and retrieves a user token
  */
 export function LogIn() {
-    console.log("here7")
     return getMusicInstance().authorize()
 }
 

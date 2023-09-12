@@ -74,6 +74,7 @@ function ShowPlaylists({userProfile, userPlaylists }) {
   };
 
   const insertPlaylistToSpotify = async (insertToSpotify) => {
+    console.log(insertToSpotify)
     for(let i = 0 ; i < insertToSpotify.length ; i++)
     {
         try {

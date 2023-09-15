@@ -45,7 +45,7 @@ app.post('/update-playlist', (req, res) => {
   res.status(200).send('Playlist updated successfully');
 });
 
-app.get('/update-playlist', (req, res) => {
+app.get('/get-playlist', (req, res) => {
   res.status(200).json({ playlist: playlistSelectedfromApple });
 });
 

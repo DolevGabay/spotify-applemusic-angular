@@ -208,7 +208,9 @@ const addSongsToApplePlaylist = async (playlistId, songs, appleToken , headers) 
     {
         let songId = await searchTrackInApple(songs[j].name, songs[j].artist, appleToken);
         console.log(songId)
+        if(songId != null){
         addTrackToPlaylist(playlistId, songId, appleToken, headers);
+        }
     }
 };
 
@@ -226,13 +228,13 @@ const addTrackToPlaylist = async (playlistId, trackId, appleToken , headers) => 
       ],
     };
 
-    const response = await axios.post(url, trackData, {headers: {...headers} });
-      
-    if (response.status === 201) {
-      console.log('Track added to playlist successfully.');
-    } else {
-      throw new Error('Failed to add the track to the playlist');
-    }
+    const response = await axios.post(url, trackData, { headers: { ...headers } });
+    console.log('Apple Music API Response:', response);      
+    if (response.status === 204) {
+        console.log('Track added to playlist successfully.');
+      } else {
+        throw new Error('Failed to add the track to the playlist');
+      }
   } catch (error) {
     console.error('Error:', error.message);
     throw error;
@@ -255,6 +257,7 @@ const searchTrackInApple = async (trackName, artistName, appleToken) => {
         });
 
         if (!response.ok) {
+            return null;
             throw new Error('Failed to search for the track');
         }
         const data = await response.json();

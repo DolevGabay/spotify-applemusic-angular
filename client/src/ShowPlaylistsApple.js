@@ -34,6 +34,7 @@ function ShowPlaylistsApple({ userProfile, userPlaylists }) {
         selected.push(userPlaylists[i]);
       }
     }
+    
     let arrayToSpotify;
     let returnedArray =  getPlaylistToSpotify(selected);
     let state = generateRandomString();
@@ -42,8 +43,7 @@ function ShowPlaylistsApple({ userProfile, userPlaylists }) {
     }).catch((error) => {
       console.error(error);
     });
-    //console.log(arrayToSpotify);
-    //spotifyAuth("apple");
+    
     fetch('http://localhost:8888/update-playlist', {
       method: 'POST',
       headers: {
@@ -53,10 +53,8 @@ function ShowPlaylistsApple({ userProfile, userPlaylists }) {
     })
       .then((response) => {
         if (response.status === 200) {
-          // Playlist was updated successfully
           console.log('Playlist updated successfully');
         } else {
-          // Handle error responses
           console.error('Failed to update the playlist');
         }
       })

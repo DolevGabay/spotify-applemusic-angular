@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./ShowPlaylists.css"; 
 import axios from 'axios';
 import NotificationPopup from './NotificationPopup';
+import { insertPlaylistToApple } from './Transfer'; // Adjust the path to your module
 
 
 function ShowPlaylists({userProfile, userPlaylists }) {
@@ -46,7 +47,8 @@ function ShowPlaylists({userProfile, userPlaylists }) {
         //console.log(insertFromSpotify)
         getTracks(selectedData[i].href, i)
     }
-    insertPlaylistToSpotify(insertFromSpotify);
+    //insertPlaylistToSpotify(insertFromSpotify);
+    insertPlaylistToApple(insertFromSpotify);
   };
 
   const getTracks = async (playlistHref, index) => {

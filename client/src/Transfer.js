@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 import { fetchAuthCode } from './spotify/spotifyAuth';
 import NotificationPopup from './NotificationPopup';
 import ThinkingLogo from './ThinkingLogo';
+import { apple_auth } from './spotify/apple-provider'
+
 
 let showPopup = false;
 
@@ -18,7 +21,7 @@ async function getProfile(accessToken) {
 }
 
 const insertPlaylistToSpotify = async (insertToSpotify,userId) => {
-    //console.log(insertToSpotify)
+    console.log(insertToSpotify)
     const added = true;
     for(let i = 0 ; i < insertToSpotify.length ; i++)
     {
@@ -144,6 +147,125 @@ const findSongUri = async (songName, artistName) => {
     
 };
 
+//handle transfer to apple music
+
+
+export const insertPlaylistToApple = async (insertFromSpotify) => {
+    let appleToken = "";
+    const response1 = await axios.get('http://localhost:8888/generate-token');
+    appleToken = response1.data.token;
+    console.log('Apple Token:', appleToken);
+            
+    await apple_auth.configure(appleToken);
+    await apple_auth.LogIn();
+    console.log('Logged in successfully.');
+
+    const headers = await apple_auth.getHeader(appleToken);
+    const url = 'https://api.music.apple.com/v1/me/library/playlists';
+
+    for(let i = 0 ; i < insertFromSpotify.length ; i++)
+    {
+        /*let songsArray = [];
+        for(let j = 0 ; j < insertFromSpotify[i].songs.length ; j++)
+        {
+            let song = await searchTrackInApple(insertFromSpotify[i].songs[j].name, insertFromSpotify[i].songs[j].artist, appleToken);
+            console.log(song)
+            songsArray.push(song);
+        }
+        console.log(songsArray);*/
+        try {
+            const playlistData = {
+                attributes: {
+                    name: insertFromSpotify[i].name,  
+                }
+            };
+
+            const requestOptions = {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify(playlistData),
+            };
+
+            const response = await fetch(url, requestOptions);
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Playlist created successfully.');
+                console.log('Playlist ID:', data.data[0].id);
+                addSongsToApplePlaylist(data.data[0].id, insertFromSpotify[i].songs, appleToken, headers);
+            } else {
+                throw new Error('Failed to create the playlist');
+            }
+        } catch (error) {
+            console.error('Error:', error.message);
+            throw error;
+        }
+    }
+};
+
+const addSongsToApplePlaylist = async (playlistId, songs, appleToken , headers) => {
+    for(let j = 0 ; j < songs.length ; j++)
+    {
+        let songId = await searchTrackInApple(songs[j].name, songs[j].artist, appleToken);
+        console.log(songId)
+        addTrackToPlaylist(playlistId, songId, appleToken, headers);
+    }
+};
+
+const addTrackToPlaylist = async (playlistId, trackId, appleToken , headers) => {
+    //console.log ( "playlistid : " + playlistId + " trackid " + trackId + " headers " + headers )
+  try {
+    const url = `https://api.music.apple.com/v1/me/library/playlists/${playlistId}/tracks`;
+
+    const trackData = {
+      data: [
+        {
+          type: 'songs',
+          id: trackId,
+        },
+      ],
+    };
+
+    const response = await axios.post(url, trackData, {headers: {...headers} });
+      
+    if (response.status === 201) {
+      console.log('Track added to playlist successfully.');
+    } else {
+      throw new Error('Failed to add the track to the playlist');
+    }
+  } catch (error) {
+    console.error('Error:', error.message);
+    throw error;
+  }
+};
+
+const searchTrackInApple = async (trackName, artistName, appleToken) => {
+    console.log(trackName)
+    console.log(artistName)
+    try {
+        const query = `term=${trackName}+${artistName}&types=songs&limit=1`;
+
+        const endpoint = `https://api.music.apple.com/v1/catalog/us/search?${query}`;
+
+        const response = await fetch(endpoint, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${appleToken}`,
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to search for the track');
+        }
+        const data = await response.json();
+        const trackId = data.results.songs.data[0].id;
+        return trackId;
+    } catch (error) {
+        console.error('Error searching for the track:', error);
+        throw error;
+    }
+};
+
 
 const Transfer = () => {
     const location = useLocation(); // Move this line outside of the useEffect
@@ -186,9 +308,8 @@ const Transfer = () => {
     return (
         <div>
             <ThinkingLogo show={!showPopup}/>
-             <NotificationPopup show={showPopup} />
+            <NotificationPopup show={showPopup} />
         </div>
     );
 };
-
 export default Transfer;

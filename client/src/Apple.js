@@ -106,6 +106,7 @@ const Apple = () => {
     useEffect(() => {
         axios.get('http://localhost:8888/generate-token').then(res => {
             getPlaylists(res.data.token);
+            //console.log(res.data.token)
         }).catch(error => {
             console.log('error fetching developer token');
         });

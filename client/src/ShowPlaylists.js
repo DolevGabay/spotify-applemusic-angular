@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from 'react';
 import "./ShowPlaylists.css"; 
 import axios from 'axios';
 import NotificationPopup from './NotificationPopup';
 import { insertPlaylistToApple } from './Transfer'; // Adjust the path to your module
+import ThinkingLogo from './ThinkingLogo';
 
 
 function ShowPlaylists({userProfile, userPlaylists }) {
@@ -10,6 +11,10 @@ function ShowPlaylists({userProfile, userPlaylists }) {
   const [selectAll, setSelectAll] = useState(false);
   let insertFromSpotify = []; // change to useState
   const [showPopup, setShowPopup] = useState(false);
+  const [showThinkLogo, setShowThinkLogo] = useState(false);
+
+  const [invalidSongs, setInvalidSongs] = useState([]);
+  let songsNotFound = [];
 
   const handleSelectAll = () => {
     if (selectAll) {
@@ -28,7 +33,8 @@ function ShowPlaylists({userProfile, userPlaylists }) {
     }
   };
 
-  const handlePrintSelected = () => {
+  const handlePrintSelected = async () => {
+    setShowThinkLogo(true);
     const selectedData = selectedPlaylists.map(index => ({
         name: userPlaylists.items[index].name,
         href: userPlaylists.items[index].href,
@@ -47,9 +53,18 @@ function ShowPlaylists({userProfile, userPlaylists }) {
         //console.log(insertFromSpotify)
         getTracks(selectedData[i].href, i)
     }
-    //insertPlaylistToSpotify(insertFromSpotify);
-    insertPlaylistToApple(insertFromSpotify);
+    songsNotFound = await insertPlaylistToApple(insertFromSpotify);
+    setInvalidSongs(songsNotFound);
+    setShowThinkLogo(false)
+    setShowPopup(true)
   };
+
+useEffect(() => {
+    console.log(invalidSongs);
+}, [invalidSongs]);
+
+useEffect(() => {
+}, [showThinkLogo]);
 
   const getTracks = async (playlistHref, index) => {
     const response = await fetch(playlistHref, {
@@ -63,7 +78,6 @@ function ShowPlaylists({userProfile, userPlaylists }) {
     }
 
     const data = await response.json();
-    //console.log(data)
     for(let i = 0 ; i < data.tracks.items.length ; i++)
     {
         const newSong = {
@@ -74,140 +88,6 @@ function ShowPlaylists({userProfile, userPlaylists }) {
     }
     //console.log(insertFromSpotify)
   };
-
-    const insertPlaylistToSpotify = async (insertToSpotify) => {
-    //console.log(insertToSpotify)
-    for(let i = 0 ; i < insertToSpotify.length ; i++)
-    {
-        try {
-            const response = await fetch(`https://api.spotify.com/v1/users/${userProfile.id}/playlists`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-            },
-            body: JSON.stringify({
-                name: insertToSpotify[i].name,
-                description: 'New playlist description',
-                public: true
-            })
-            });
-        
-            if (!response.ok) {
-            throw new Error('HTTP status ' + response.status);
-            }
-        
-            const newPlaylistData = await response.json();
-            addSongsToPlaylist(newPlaylistData.id,insertToSpotify[i].songs);
-             
-        } catch (error) {
-            console.error('Error:', error);
-            throw error;
-        }
-    }
-  };
-
-  const addSongsToPlaylist = async (playlistId, songs) => {
-    //todo: do it more efficiently, send them all by commas
-    let allTracksAdded = true;
-
-    for (let i = 0; i < songs.length; i++) {
-        const trackUri = await findSongUri(songs[i].name, songs[i].artist);
-
-        try {
-            const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-                },
-                body: JSON.stringify({
-                    uris: [trackUri],
-                    position: 0,
-                }),
-            });
-
-            if (!response.ok) {
-                throw new Error('HTTP status ' + response.status);
-            }
-
-            const data = await response.json();
-            console.log('Track added to playlist:', data);
-        } catch (error) {
-            console.error('Error:', error);
-            allTracksAdded = false;
-        }
-    }
-
-    if (allTracksAdded) {
-        setShowPopup(true);
-        setTimeout(() => {
-            setShowPopup(false);
-        }, 3000);
-    }
-};
-
-const findSongUri = async (songName, artistName) => {
-    try {
-        const initialQuery = `track:${encodeURIComponent(songName)} artist:${encodeURIComponent(artistName)}`;
-        const response = await fetch(`https://api.spotify.com/v1/search?q=${initialQuery}&type=track`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error('HTTP status ' + response.status);
-        }
-
-        const data = await response.json();
-        console.log(data);
-
-        const items = data.tracks.items;
-
-        if (items.length > 0) {
-            const uri = items[0].uri;
-            console.log("URI found:", uri);
-            return uri;
-        } else {
-            console.log("No URI found for the given query. Retrying without artist.");
-
-            // Retry the search without the artist
-            const retryQuery = `track:${encodeURIComponent(songName)}`;
-            const retryResponse = await fetch(`https://api.spotify.com/v1/search?q=${retryQuery}&type=track`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-                }
-            });
-
-            if (!retryResponse.ok) {
-                throw new Error('HTTP status ' + retryResponse.status);
-            }
-
-            const retryData = await retryResponse.json();
-            console.log(retryData);
-
-            const retryItems = retryData.tracks.items;
-
-            if (retryItems.length > 0) {
-                const retryUri = retryItems[0].uri;
-                console.log("URI found (retry):", retryUri);
-                return retryUri;
-            } else {
-                console.log("No URI found for the retry query either.");
-                alert(songName + " not found");
-                return null; // Or you can return some default value to indicate no URI was found.
-            }
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        throw error;
-    }
-    
-};
-
 
   return (
     <div>
@@ -245,7 +125,8 @@ const findSongUri = async (songName, artistName) => {
             ))}
         </ul>
         <button onClick={handlePrintSelected}>Transfer</button>
-        <NotificationPopup show={showPopup} />
+        <ThinkingLogo show={showThinkLogo}/>
+        <NotificationPopup invalidSongs={invalidSongs} show={showPopup} />
         </div>
     </div>
   );

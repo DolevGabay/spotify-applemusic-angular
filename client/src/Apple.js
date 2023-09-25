@@ -1,18 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { apple_auth } from './spotify/apple-provider'
+import appleAuth from './apple/appleAuth';
 import ShowPlaylistsApple from './ShowPlaylistsApple';
-import {getMusicInstance} from './spotify/appleAuth'
 
-let resolvedValue;  
-
-const getPlaylistToSpotify = async (selectedPlaylists) => {
+const getPlaylistToSpotify = async (selectedPlaylists, headers) => {
     const playlistsReadyToSpotify = [];
     for(let i = 0 ; i < selectedPlaylists.length ; i++)
     {
         const playlistHref = "https://api.music.apple.com" + selectedPlaylists[i].href;
         let songsInPlaylist;
-        let songsInPlaylistPromise = getSongsFromPlaylist(playlistHref)
+        let songsInPlaylistPromise = getSongsFromPlaylist(playlistHref, headers)
         await songsInPlaylistPromise.then((value) => {
             songsInPlaylist = value;
           }).catch((error) => {
@@ -29,9 +26,9 @@ const getPlaylistToSpotify = async (selectedPlaylists) => {
     return playlistsReadyToSpotify;
 }
 
-const getSongsFromPlaylist = async (playlistHref) => {
+const getSongsFromPlaylist = async (playlistHref, headers) => {
     try {
-        const response = await axios.get(playlistHref + "/tracks", { headers: { ...resolvedValue } });
+        const response = await axios.get(playlistHref + "/tracks", { headers: { ...headers } });
         if (response.status === 200) {
             const arrayOfSongs = [];
             const playlistData = response.data;
@@ -60,32 +57,19 @@ const getSongsFromPlaylist = async (playlistHref) => {
 const Apple = () => {
     const [playlistToPass, setPlaylistToPass] = useState([]);
     let userProfileInData = [];
+    let headers = "";
 
     const getPlaylists = async (token) => {
         const apiEndpoint = 'https://api.music.apple.com/v1/me/library/playlists';
-        let headers = "";
         
-        await apple_auth.configure(token);
-        await apple_auth.LogIn();
+        await appleAuth.configure(token);
+        await appleAuth.LogIn();
         console.log('Logged in successfully.');
 
-        headers = apple_auth.getHeader(token);
-        await headers.then((value) => {
-            resolvedValue = value;
-          }).catch((error) => {
-            console.error(error);
-          });
-        
-          axios.get(apiEndpoint, { headers: { ...resolvedValue } })
-          .then(response => {
-            const playlists = response.data.data;
-            //console.log('User Playlists:', playlists);
-            
-            setIntoTemplate(playlists);
-          })
-          .catch(error => {
-            console.error('Error fetching user playlists:', error);
-          });
+        headers = await appleAuth.getHeader(token);
+        const response = await axios.get(apiEndpoint, { headers: { ...headers } });
+        const playlists = response.data.data;
+        setIntoTemplate(playlists);
     };
 
     const setIntoTemplate = (playlists) => {
@@ -103,12 +87,9 @@ const Apple = () => {
         setPlaylistToPass(playlistToPassTemp);
     };
 
-    useEffect(() => {
-        axios.get('http://localhost:8888/generate-token').then(res => {
-            getPlaylists(res.data.token);
-        }).catch(error => {
-            console.log('error fetching developer token');
-        });
+    useEffect(async () => {
+        const response = await axios.get('http://localhost:8888/generate-token');
+        getPlaylists(response.data.token);
     }, []);
 
     return (

@@ -2,13 +2,12 @@ import React from 'react';
 import spotifyAuth from './spotify/spotifyAuth';
 import PostMalone from './assets/postmalone.jpeg';
 import TheWeeknd from './assets/theweeknd.jpeg';
-import { token } from './spotify/appleAuth';
 
 const Home = () => {
 
     const onSpotifyLogin = () => {
-        spotifyAuth();
-        console.log('Spotify login');
+        spotifyAuth.spotifyAuth();
+        window.location.href = "http://localhost:8888/spotify/auth";
     };
 
     const onAppleLogin = () => {

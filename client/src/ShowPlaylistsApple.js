@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import "./ShowPlaylists.css";
 import axios from 'axios';
 import { getPlaylistToSpotify } from './Apple';
-import { generateRandomString } from './spotify/spotifyAuth';
 import spotifyAuth from './spotify/spotifyAuth';
 
 function ShowPlaylistsApple({ userProfile, userPlaylists }) {
@@ -36,7 +35,7 @@ function ShowPlaylistsApple({ userProfile, userPlaylists }) {
     }
     let arrayToSpotify;
     let returnedArray =  getPlaylistToSpotify(selected);
-    let state = generateRandomString();
+    let state = spotifyAuth.generateRandomString();
     await returnedArray.then((value) => {
       arrayToSpotify = value;
     }).catch((error) => {

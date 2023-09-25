@@ -1,5 +1,7 @@
+import axios from "axios";
+
 const CLIENT_ID = '19fa87bff4c74ef79f1a8af8608d1d87';
-let REDIRECT_URI = 'http://localhost:8080/spotify';
+const REDIRECT_URI = 'http://localhost:8888/spotify/auth';
 const SCOPES = 'user-read-private user-read-email playlist-read-private playlist-read-collaborative user-library-read user-top-read user-read-recently-played user-follow-read user-follow-modify user-read-playback-state user-modify-playback-state user-read-playback-position user-read-currently-playing playlist-read-private playlist-modify-private playlist-modify-public';
 
 function generateRandomString(length) {
@@ -31,7 +33,7 @@ async function spotifyAuth(redirect_uri = REDIRECT_URI, state = undefined) {
     const codeVerifier = generateRandomString(128);
     const codeChallenge = await generateCodeChallenge(codeVerifier);
     let r_state = state;
-    window.localStorage.setItem('code_verifier', codeVerifier);
+
     if (r_state === undefined)
     {
         r_state = generateRandomString(16); // Recommended by Spotify
@@ -44,6 +46,10 @@ async function spotifyAuth(redirect_uri = REDIRECT_URI, state = undefined) {
         state: r_state,
         code_challenge_method: 'S256',
         code_challenge: codeChallenge
+    });
+
+    await axios.post('http://localhost:8888/spotify/store-code-verifier', {
+        codeVerifier: codeVerifier
     });
 
     window.location = 'https://accounts.spotify.com/authorize?' + args;
@@ -59,31 +65,19 @@ async function fetchAuthCode(code) {
       code_verifier: codeVerifier
     });
 
-    const response = fetch('https://accounts.spotify.com/api/token', {
-        method: 'POST',
+    const response = await axios.post('https://accounts.spotify.com/api/token', {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
         },
-        body: body})
-    .then(response => {
-        if (!response.ok) {
-        throw new Error('HTTP status ' + response.status);
-        }
-        return response.json();
-    })
-    .then(data => {
-        localStorage.setItem('access_token', data.access_token);
-        //console.log(data.access_token);
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
+        body: body });
+    
+    const access_token = response.data.access_token;
 
+    localStorage.setItem('access_token', access_token);
     return response;
 }
 
-export { fetchAuthCode, generateRandomString };
-export default spotifyAuth;
+export default { spotifyAuth, generateRandomString, fetchAuthCode }
 
 
 

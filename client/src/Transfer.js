@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { fetchAuthCode } from './spotify/spotifyAuth';
+import spotifyAuth from './spotify/spotifyAuth';
 
 
 async function getProfile(accessToken) {
@@ -22,7 +22,7 @@ const Transfer = () => {
         const state = queryParams.get('state');
         console.log(state);
 
-        const accessToken = await fetchAuthCode(code);
+        const accessToken = await spotifyAuth.fetchAuthCode(code);
         const userData = await getProfile(accessToken);
 
         console.log(userData);

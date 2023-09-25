@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { fetchAuthCode } from './spotify/spotifyAuth';
+import spotifyAuth from './spotify/spotifyAuth';
 import axios from 'axios';
 import ShowPlaylists from './ShowPlaylists';
 
@@ -11,26 +11,13 @@ const Spotify = () => {
 
     let accessToken; // change to useState
     const [userProfile, setUserProfile] = useState(null);
-    const [userPlaylists, setUserPlaylists] = useState({
-        "items": [
-            {
-                "name": "Playlist 1"
-            },
-            {
-                "name": "Playlist 2"
-            },
-            {
-                "name": "Playlist 3"
-            }
-        ]
-    });
+    const [userPlaylists, setUserPlaylists] = useState({ items: [] });
 
     const startFunction = async () => {
         if (!accessToken) {
-            await fetchAuthCode(code);
-            //console.log(`good: ${localStorage.getItem('access_token')}`)
+            await spotifyAuth.fetchAuthCode(code);
             accessToken = localStorage.getItem('access_token');
-            const data = await getProfile(accessToken);
+            await getProfile(accessToken);
             getUserPlaylists();
         }
     };
@@ -48,16 +35,9 @@ const Spotify = () => {
     }
     
     const getUserPlaylists = async () => {
-       // console.log(`accessToken: ${accessToken} for getUserPlaylists`);
-        const response = await fetch('https://api.spotify.com/v1/me/playlists', {
-          headers: {
-            Authorization: 'Bearer ' + accessToken
-          }
-        });
-      
-        const data = await response.json();
+        const response = await axios.get('https://api.spotify.com/v1/me/playlists', { headers: { Authorization: 'Bearer ' + accessToken } });
+        const data = response.json();
         setUserPlaylists(data);
-        //console.log(data.items[0].images[0].url);
         return data;
     };
 

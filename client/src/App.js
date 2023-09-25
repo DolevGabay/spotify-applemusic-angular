@@ -6,6 +6,8 @@ import Spotify from './Spotify';
 import Contact from './Contact';
 import Apple from './Apple';
 import Transfer from './Transfer';
+import { TransferProvider } from './TransferContext';
+import Playlists from './Playlists';
 
 const App = () => {
     return (
@@ -13,11 +15,12 @@ const App = () => {
         <BrowserRouter>
             <Navbar />
             <Routes>
-               <Route path="/" element={<Home />} />
-               <Route path="/spotify" element={<Spotify />} />
-               <Route path="/Contact" element={<Contact />} />
-               <Route path="/Apple" element={<Apple />} />
-               <Route path="/Transfer" element={<Transfer />} />
+                    <Route path="/" element={<Home />} />
+                    <Route path="/spotify" element={<Spotify />} />
+                    <Route path="/Contact" element={<Contact />} />
+                    <Route path="/Apple" element={<Apple />} />
+                    <Route path="/Transfer" element={<Transfer />} />
+                    <Route path="/playlists" element={<Playlists />} />
             </Routes>
         </BrowserRouter>
         </div>

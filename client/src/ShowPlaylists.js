@@ -3,7 +3,6 @@ import "./ShowPlaylists.css";
 import axios from 'axios';
 import NotificationPopup from './NotificationPopup';
 
-
 function ShowPlaylists({userProfile, userPlaylists }) {
   const [selectedPlaylists, setSelectedPlaylists] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
@@ -50,18 +49,13 @@ function ShowPlaylists({userProfile, userPlaylists }) {
   };
 
   const getTracks = async (playlistHref, index) => {
-    const response = await fetch(playlistHref, {
-        headers: {
-            Authorization: 'Bearer ' + localStorage.getItem('access_token')
-        }
-    });
+    const response = await axios.get(playlistHref, { headers: { Authorization: 'Bearer ' + localStorage.getItem('access_token') }});
 
     if (!response.ok) {
         throw new Error('HTTP status ' + response.status);
     }
 
-    const data = await response.json();
-    //console.log(data)
+    const data = response.json();
     for(let i = 0 ; i < data.tracks.items.length ; i++)
     {
         const newSong = {

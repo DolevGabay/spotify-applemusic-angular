@@ -11,7 +11,7 @@ const Home = () => {
     };
 
     const onAppleLogin = () => {
-        window.location.href = 'http://localhost:8080/Apple';
+        window.location.href = 'http://localhost:8888/apple/auth';
       };
 
     return(

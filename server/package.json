@@ -21,6 +21,7 @@
     "jsonwebtoken": "^9.0.2",
     "querystring": "^0.2.1",
     "requests": "^0.3.0",
-    "smtp-client": "^0.4.0"
+    "smtp-client": "^0.4.0",
+    "uuid": "^9.0.1"
   }
 }

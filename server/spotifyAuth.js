@@ -36,8 +36,14 @@ router.get('/callback', async (req, res) => {
       }});
 
     const accessToken = tokenResponse.data.access_token;
+    const reqData = {
+        streamer: 'Spotify',
+        data: accessToken
+    };
 
-    res.redirect(`http://localhost:8080/playlists?token=${accessToken}&streamer=Spotify`);
+    const response = await axios.post('http://localhost:8888/save-auth-data', reqData);
+    console.log(response.data);
+    res.redirect(`http://localhost:8080/playlists?&uuid=${response.data.uuid}`);
 });
 
 function generateRandomString(length) {

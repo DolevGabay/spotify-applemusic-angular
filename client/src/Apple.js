@@ -74,7 +74,7 @@ const Apple = () => {
 
     const setIntoTemplate = (playlists) => {
         let playlistToPassTemp = [];
-        for (let i = 0 ; i< playlists.length ; i++)
+        for (let i = 0 ; i < playlists.length ; i++)
         {
         let playlistObject = {
             name:playlists[i].attributes.name ,

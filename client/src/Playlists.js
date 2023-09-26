@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom'
 import AppleProvider from './streamers/AppleProvider'
 import SpotifyProvider from './streamers/SpotifyProvider'
 import PlaylistDisplay from './PlaylistDisplay'
+import axios from 'axios';
 
 const streamerProviders = {
     Spotify: SpotifyProvider,
@@ -11,28 +12,42 @@ const streamerProviders = {
 
 const Playlists = () => {
     let streamerProvider;
+
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
-    const token = searchParams.get('token');
-    const streamer = searchParams.get('streamer');
-    
+    const uuid = searchParams.get('uuid');
+
+    const [authData, setAuthData] = useState(null);
     const [userName, setUserName] = useState('');
     const [playlists, setUserPlaylists] = useState([]);
 
     useEffect(() => {
         
-        const provider = streamerProviders[streamer];
-        streamerProvider = new provider(token);
-
-        const fetchData = async (streamerProvider) => {
-            await streamerProvider.loadData();
-            
-            setUserName(streamerProvider.name);
-            setUserPlaylists(streamerProvider.playlists);
+        const fetchAuthInfo = async () => {
+            const response = await axios.get(`http://localhost:8888/get-auth-info?uuid=${uuid}`);
+            console.log(response)
+            setAuthData(response.data.authDataItem);
         };
 
-        fetchData(streamerProvider);
-    }, [token, streamer]);
+        fetchAuthInfo();
+    }, []);
+
+    useEffect(() => {
+        if (authData != null)  {
+            console.log(authData.data);
+            const provider = streamerProviders[authData.streamer];
+            streamerProvider = new provider(authData.data);
+
+            const fetchData = async (streamerProvider) => {
+                await streamerProvider.loadData();
+                console.log(streamerProvider.playlists);
+                setUserName(streamerProvider.name);
+                setUserPlaylists(streamerProvider.playlists);
+            };
+
+            fetchData(streamerProvider);
+        }
+    }, [authData]);
 
     return (
         <div>

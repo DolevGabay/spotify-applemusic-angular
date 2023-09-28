@@ -1,4 +1,6 @@
 import React from 'react';
+import "./ShowPlaylists.css"; 
+
 
 const PlaylistDisplay = ({ playlists }) => {
     const [selectedPlaylists, setSelectedPlaylists] = React.useState([]);
@@ -12,17 +14,33 @@ const PlaylistDisplay = ({ playlists }) => {
     }
 
     return (
-      <div className="container">
-        <div className="row justify-content-center"> {/* Added justify-content-center */}
+      <div className="playlist-container ">
+        <div className="playlist-cards">
           {playlists.map((playlist, index) => (
-            <div key={index} className={`col-md-6 item card ${selectedPlaylists.includes(index) ? 'selected' : ''}`} onClick={() => onPlaylistClick(index)} style={{ margin: '5px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              <img src={playlist.image} alt={playlist.name} className="img-fluid" style={{ maxWidth: '300px', maxHeight: '300px' }} />
-              <div style={{ marginTop: '5px' }}>{playlist.name}</div>
+            <div
+              key={index}
+              className={`playlist-card ${
+                selectedPlaylists.includes(index) ? 'selected' : ''
+              }`}
+              onClick={() => onPlaylistClick(index)}
+            >
+              <div className="card-content">
+                <img
+                  src={playlist.image}
+                  alt={playlist.name}
+                  className="playlist-image "
+                />
+                <h3 className="playlist-title">{playlist.name}</h3>
+              </div>
             </div>
           ))}
         </div>
       </div>
     );
+    
+    
+    
+    
   };
 
 export default PlaylistDisplay;

@@ -19,7 +19,7 @@ const App = () => {
                     <Route path="/spotify" element={<Spotify />} />
                     <Route path="/Contact" element={<Contact />} />
                     <Route path="/Apple" element={<Apple />} />
-                    <Route path="/Transfer" element={<Transfer />} />
+                    <Route path="/transfer" element={<Transfer />} />
                     <Route path="/playlists" element={<Playlists />} />
             </Routes>
         </BrowserRouter>

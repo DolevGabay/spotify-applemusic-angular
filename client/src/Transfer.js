@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import spotifyAuth from './spotify/spotifyAuth';
 
 
 async function getProfile(accessToken) {
@@ -15,21 +14,13 @@ async function getProfile(accessToken) {
 }
 
 const Transfer = () => {
-    useEffect(async () => {
-        const location = useLocation();
-        const queryParams = new URLSearchParams(location.search);
-        const code = queryParams.get('code');
-        const state = queryParams.get('state');
-        console.log(state);
+    const location = useLocation();
+    const transferData = location.state.transferData;
 
-        const accessToken = await spotifyAuth.fetchAuthCode(code);
-        const userData = await getProfile(accessToken);
-
-        console.log(userData);
-
-
-        
+    useEffect(() => {
+        console.log(transferData);
     }, []);
+
     return (
         <div>
             <h1>Transfer</h1>

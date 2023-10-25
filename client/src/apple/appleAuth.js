@@ -35,22 +35,15 @@ function isLoggedIn() {
     }
 }
 
-/**
- * Authorizes a user and retrieves a user token
- */
 function LogIn() {
     return getMusicInstance().authorize()
 }
 
-/**
- * Signs a User out
- */
 function LogOut() {
     return getMusicInstance().unauthorize()
 }
 
 async function getHeader(developerToken) {
-
     const header = {
         Authorization: `Bearer ${developerToken}`,
         Accept: 'application/json',

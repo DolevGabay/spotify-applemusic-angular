@@ -6,7 +6,6 @@ import Spotify from './Spotify';
 import Contact from './Contact';
 import Apple from './Apple';
 import Transfer from './Transfer';
-import { TransferProvider } from './TransferContext';
 import Playlists from './Playlists';
 
 const App = () => {

@@ -8,7 +8,6 @@ const REDIRECT_URI = 'http://localhost:8888/spotify/callback';
 const SCOPE = 'user-read-private user-read-email playlist-read-private playlist-read-collaborative user-library-read user-top-read user-read-recently-played user-follow-read user-follow-modify user-read-playback-state user-modify-playback-state user-read-playback-position user-read-currently-playing playlist-read-private playlist-modify-private playlist-modify-public';
 
 router.get('/auth', async (req, res) => {
-    console.log('here1');
     const state = generateRandomString(16);
     req.session.state = state;
     console.log(state);

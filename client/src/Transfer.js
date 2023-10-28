@@ -1,25 +1,16 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-
-
-async function getProfile(accessToken) {
-    const response = await fetch('https://api.spotify.com/v1/me', {
-      headers: {
-        Authorization: 'Bearer ' + accessToken
-      }
-    });
-  
-    const data = await response.json();
-    return data;
-}
 
 const Transfer = () => {
     const location = useLocation();
     const transferData = location.state.transferData;
+    const transferStreamerProvider= location.state.streamerProvider;
 
     useEffect(() => {
         console.log(transferData);
-    }, []);
+        console.log(transferStreamerProvider);
+
+    }, [transferData]);
 
     return (
         <div>

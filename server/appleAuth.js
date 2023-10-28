@@ -34,4 +34,10 @@ router.get('/auth', async (req, res) => {
     res.redirect(`http://localhost:8080/playlists?&uuid=${response.data.uuid}`);
 });
 
+router.get('/apple_access_token', async (req, res) => {
+    const token = generateToken();
+    res.json({ token }); 
+});
+
+
 module.exports = router;

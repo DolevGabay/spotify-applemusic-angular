@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import AppleProvider from './streamers/AppleProvider'
 import SpotifyProvider from './streamers/SpotifyProvider'
-import PlaylistDisplay from './PlaylistDisplay'
 import axios from 'axios';
 
 const streamerProviders = {
@@ -11,22 +10,19 @@ const streamerProviders = {
 }
 
 const Playlists = () => {
-    let streamerProvider;
-
     const navigate = useNavigate();
     const location = useLocation();
-
     const uuid = new URLSearchParams(location.search).get('uuid');
-
     const [authData, setAuthData] = useState(null);
     const [userName, setUserName] = useState('');
     const [playlists, setUserPlaylists] = useState([]);
     const [selectedPlaylists, setSelectedPlaylists] = useState([]);
+    const [streamerProvider, setStreamerProvider] = useState(null); 
+    const [otherStreamerProvider, setOtherStreamerProvider] = useState(null); 
 
     useEffect(() => {
         const fetchAuthInfo = async () => {
             const response = await axios.get(`http://localhost:8888/get-auth-info?uuid=${uuid}`);
-            console.log(response)
             setAuthData(response.data.authDataItem);
         };
 
@@ -34,32 +30,45 @@ const Playlists = () => {
     }, []);
 
     useEffect(() => {
-        if (authData != null)  {
-            console.log(authData.data);
+        if (authData != null) {
+            console.log(authData)
             const provider = streamerProviders[authData.streamer];
-            streamerProvider = new provider(authData.data);
+            const providerInstance = new provider(authData.data);
 
-            const fetchData = async (streamerProvider) => {
-                await streamerProvider.loadData();
-                console.log(streamerProvider.playlists);
-                setUserName(streamerProvider.name);
-                setUserPlaylists(streamerProvider.playlists);
+            const fetchData = async (providerInstance) => {
+                await providerInstance.loadData();
+                setUserName(providerInstance.name);
+                setUserPlaylists(providerInstance.playlists);
+                setStreamerProvider(providerInstance);
             };
 
-            fetchData(streamerProvider);
+            fetchData(providerInstance);
         }
     }, [authData]);
 
-    const onTransferClick = () => {
-        console.log(selectedPlaylists)
+    const onTransferClick = async () => {
+        streamerProvider.getPlaylistSongs(selectedPlaylists);
+        console.log(streamerProvider.PlaylistSongsToTransfer);
+
+        const response = await fetch('http://localhost:8888/apple/apple_access_token');
+        const tokenData = await response.json();
+
+        const provider = streamerProviders["Spotify"];
+        const providerInstance = new provider(tokenData);
+        console.log(providerInstance);
+        await providerInstance.loadData();
+        setOtherStreamerProvider(providerInstance);
+        console.log(otherStreamerProvider)
+
         const transferData = {
             playlists: selectedPlaylists.map((index) => playlists[index]),
             from: authData.streamer,
-            to: authData.streamer === 'Spotify' ? 'Apple' : 'Spotify' 
+            to: authData.streamer === 'Spotify' ? 'Apple' : 'Spotify',
         };
 
-        navigate('/transfer', { state: { transferData } });
+        //navigate('/transfer', { state: { transferData, streamerProvider } });
     };
+    
 
     const onPlaylistClick = (index) => {
         if (selectedPlaylists.includes(index) === false) {

@@ -2,10 +2,12 @@ import axios from 'axios';
 
 class SpotifyProvider {
     constructor(accessToken) {
+        console.log("i put access token:"+ accessToken )
         this.accessToken = accessToken;
         this.header = { Authorization: 'Bearer ' + accessToken };
         this.name = '';
         this.playlists = [];
+        this.PlaylistSongsToTransfer = [];
     }
 
     async loadName() {
@@ -38,6 +40,41 @@ class SpotifyProvider {
 
         return this.playlists;
     }
+
+    async getPlaylistSongs(selectedPlaylists) {
+        for(let i = 0; i <selectedPlaylists.length ; i++)
+        {
+            let playlistId = this.playlists[selectedPlaylists[i]].id
+            const playlist = {
+                name:this.playlists[selectedPlaylists[i]].name ,
+                songs: [
+                ]
+            };
+
+            const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
+                    headers: {
+                        'Authorization': 'Bearer ' + this.accessToken
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    for(let j = 0; j <data.items.length ; j++)
+                    {
+                        const song = {
+                            trackName: data.items[j].track.name,
+                            artist: data.items[j].track.artists[0].name,
+                        }
+                        playlist.songs.push(song)
+                    }
+                    
+                    this.PlaylistSongsToTransfer.push(playlist) 
+                } else {
+                    console.error('Failed to retrieve playlist tracks1111:', response.status, response.statusText);
+                    return [];
+                } 
+        }
+    };
 
     async loadData() {
         await this.loadName();

@@ -1,13 +1,13 @@
 import axios from 'axios';
 
 class SpotifyProvider {
-    constructor(accessToken) {
-        console.log("i put access token:"+ accessToken )
+    constructor(accessToken, musicAppBelong) {
         this.accessToken = accessToken;
         this.header = { Authorization: 'Bearer ' + accessToken };
         this.name = '';
         this.playlists = [];
         this.PlaylistSongsToTransfer = [];
+        this.musicApp = musicAppBelong;
     }
 
     async loadName() {
@@ -20,6 +20,12 @@ class SpotifyProvider {
 
         return this.name;
     };
+
+    async loadToken() {
+        const response = await fetch('http://localhost:8888/apple/apple_access_token');
+        const tokenData = await response.json();
+        this.accessToken = tokenData.token; 
+    }
 
     async loadPlaylists() {
         const response = await axios.get('https://api.spotify.com/v1/me/playlists', {

@@ -1,13 +1,15 @@
 import axios from 'axios';
 
 class AppleProvider {
-    constructor(accessToken) {
+    constructor(accessToken, musicAppBelong) {
         this.accessToken = accessToken;
         this.instance = window.MusicKit;
         this.header = { Authorization: 'Bearer ' + accessToken };
         this.name = '';
         this.playlists = [];
         this.PlaylistSongsToTransfer = [];
+        this.musicApp = musicAppBelong;
+
     }
 
     async loadName() {
@@ -16,6 +18,12 @@ class AppleProvider {
         console.log(response);
 
     };
+
+    async loadToken() {
+        const response = await fetch('http://localhost:8888/apple/apple_access_token');
+        const tokenData = await response.json();
+        this.accessToken = tokenData.token; 
+    }
 
     async loadPlaylists() {
         const apiEndpoint = 'https://api.music.apple.com/v1/me/library/playlists';
@@ -73,17 +81,50 @@ class AppleProvider {
     };
 
     async insertPlaylist(playlistToInsert) {
-        console.log("lets insert")
-    };
+        if (!this.accessToken) {
+            throw new Error("Access token is missing. Make sure to authenticate first.");
+        }
+    
+        const playlistName = playlistToInsert[0].name;
+        const playlistData = {
+            name: playlistName,
+        };
+    
+        try {
+            const response = await fetch('https://api.music.apple.com/v1/me/library/playlists', {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${this.accessToken}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(playlistData),
+            });
+    
+            if (response.status === 201) {
+                const data = await response.json();
+                const newPlaylistId = data.data[0].id;
+                console.log('New playlist created with ID:', newPlaylistId);
+            } else {
+                console.error('Error creating playlist:', response.status, response.statusText);
+            }
+        } catch (error) {
+            console.error('Error creating playlist:', error);
+        }
+    }
+    
 
 
     async loadData() {
+        if (this.accessToken == null || this.accessToken == ""){
+            await this.loadToken();
+        }
         await this.configure(this.accessToken);
         await this.LogIn();
-        console.log(this.getMusicInstance().musicUserToken);
+        //console.log(this.getMusicInstance().musicUserToken);
         this.header = {
             Authorization: `Bearer ${this.accessToken}`,
-            'Music-User-Token': this.getMusicInstance().musicUserToken
+            'Music-User-Token': this.getMusicInstance().musicUserToken,
+            'Content-Type': 'application/json'
         };
 
         await this.loadPlaylists();

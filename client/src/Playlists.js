@@ -33,7 +33,7 @@ const Playlists = () => {
         if (authData != null) {
             console.log(authData)
             const provider = streamerProviders[authData.streamer];
-            const providerInstance = new provider(authData.data);
+            const providerInstance = new provider(authData.data, authData.streamer);
 
             const fetchData = async (providerInstance) => {
                 await providerInstance.loadData();
@@ -48,17 +48,24 @@ const Playlists = () => {
 
     const onTransferClick = async () => {
         streamerProvider.getPlaylistSongs(selectedPlaylists);
+        const playlistToInsert = streamerProvider.PlaylistSongsToTransfer;
         console.log(streamerProvider.PlaylistSongsToTransfer);
 
-        const response = await fetch('http://localhost:8888/apple/apple_access_token');
-        const tokenData = await response.json();
+        let other;
+        if (streamerProvider.musicApp == "Spotify"){
+            other = "Apple";
+        }
+        if (streamerProvider.musicApp == "Apple"){
+            other = "Spotify"
+        }
 
-        const provider = streamerProviders["Spotify"];
-        const providerInstance = new provider(tokenData);
-        console.log(providerInstance);
+        const provider = streamerProviders[other];
+        const providerInstance = new provider("",other);
         await providerInstance.loadData();
+        //console.log(providerInstance);
         setOtherStreamerProvider(providerInstance);
-        console.log(otherStreamerProvider)
+        await providerInstance.insertPlaylist(playlistToInsert);
+
 
         const transferData = {
             playlists: selectedPlaylists.map((index) => playlists[index]),

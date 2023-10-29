@@ -62,7 +62,6 @@ const Playlists = () => {
         const provider = streamerProviders[other];
         const providerInstance = new provider("",other);
         await providerInstance.loadData();
-        //console.log(providerInstance);
         setOtherStreamerProvider(providerInstance);
         await providerInstance.insertPlaylist(playlistToInsert);
 

@@ -36,13 +36,18 @@ class SpotifyProvider {
             };
         });
 
-        console.log(playlists);
+        //console.log(playlists);
         return playlists;
     }
 
     async getSongsFromPlaylist(playlist) {
 
         let playlistId = playlist.id;
+
+        const playlistToReturn = {
+            playlistName: playlist.name,
+            songs: [],
+        }
 
         const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
             headers: this.header
@@ -56,10 +61,10 @@ class SpotifyProvider {
                         trackName: data.items[j].track.name,
                         artist: data.items[j].track.artists[0].name,
                     }
-                    playlist.songs.push(song)
+                    playlistToReturn.songs.push(song)
                 }
                 
-                this.PlaylistSongsToTransfer.push(playlist) 
+                return playlistToReturn; 
             } else {
                 console.error('Failed to retrieve playlist tracks1111:', response.status, response.statusText);
                 return [];

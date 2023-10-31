@@ -37,40 +37,38 @@ class AppleProvider {
         return this.playlists;
     }
 
-    async getPlaylistSongs (selectedPlaylists){
-        for(let i = 0; i < selectedPlaylists.length ; i++)
-        {
-            let playlistId = this.playlists[selectedPlaylists[i]].id
-            const playlist = {
-                name:this.playlists[selectedPlaylists[i]].name ,
-                songs: [
-                ]
-            };
-            const apiUrl = 'https://api.music.apple.com/v1/me/library/playlists/{playlist_id}/tracks';
-            try {
-                const response = await axios.get(apiUrl.replace('{playlist_id}', playlistId), {
-                    headers: this.header
-                });
+    async getSongsFromPlaylist (playlist){
         
-                if (response.status === 200) {
-                    const songsRes = response.data.data;
-        
-                    //console.log(songs);
-                    for(let j = 0; j <songsRes.length ; j++)
-                        {
-                            const song = {
-                                trackName: songsRes[j].attributes.name,
-                                artist: songsRes[j].attributes.artistName,
-                            }
-                            playlist.songs.push(song)
+        let playlistId = playlist.id;
+
+        const playlistToReturn = {
+            playlistName: playlist.name,
+            songs: [],
+        }
+
+        const apiUrl = 'https://api.music.apple.com/v1/me/library/playlists/{playlist_id}/tracks';
+        try {
+            const response = await axios.get(apiUrl.replace('{playlist_id}', playlistId), {
+                headers: this.header
+            });
+    
+            if (response.status === 200) {
+                const songsRes = response.data.data;
+    
+                for(let j = 0; j <songsRes.length ; j++)
+                    {
+                        const song = {
+                            trackName: songsRes[j].attributes.name,
+                            artist: songsRes[j].attributes.artistName,
                         }
-                        this.PlaylistSongsToTransfer.push(playlist)
-                } else {
-                    console.error('Failed to retrieve playlist songs:', response.status, response.statusText);
-                }
-            } catch (error) {
-                console.error('Error while getting playlist songs:', error);
+                        playlistToReturn.songs.push(song)
+                    }
+                    return playlistToReturn;
+            } else {
+                console.error('Failed to retrieve playlist songs:', response.status, response.statusText);
             }
+        } catch (error) {
+            console.error('Error while getting playlist songs:', error);
         }
     };
 

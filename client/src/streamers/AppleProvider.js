@@ -1,14 +1,15 @@
 import axios from 'axios';
 
 class AppleProvider {
-    constructor(accessToken, musicAppBelong) {
-        this.accessToken = accessToken;
+
+    constructor(authData) {
+        this.accessToken = authData.token;
         this.instance = window.MusicKit;
         this.header = { Authorization: 'Bearer ' + accessToken };
+        this.provider = 'Apple';
         this.name = '';
         this.playlists = [];
         this.PlaylistSongsToTransfer = [];
-        this.musicApp = musicAppBelong;
 
     }
 
@@ -18,12 +19,6 @@ class AppleProvider {
         console.log(response);
 
     };
-
-    async loadToken() {
-        const response = await fetch('http://localhost:8888/apple/apple_access_token');
-        const tokenData = await response.json();
-        this.accessToken = tokenData.token; 
-    }
 
     async loadPlaylists() {
         const apiEndpoint = 'https://api.music.apple.com/v1/me/library/playlists';

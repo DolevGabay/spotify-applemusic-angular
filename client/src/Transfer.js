@@ -4,11 +4,10 @@ import { useLocation } from 'react-router-dom';
 const Transfer = () => {
     const location = useLocation();
     const transferData = location.state.transferData;
-    const transferStreamerProvider= location.state.streamerProvider;
 
     useEffect(() => {
         console.log(transferData);
-        console.log(transferStreamerProvider);
+        
 
     }, [transferData]);
 

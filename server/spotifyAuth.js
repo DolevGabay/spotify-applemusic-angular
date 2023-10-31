@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const axios = require('axios');
 
+const STREAMER  = 'Spotify';
 const CLIENT_ID = '19fa87bff4c74ef79f1a8af8608d1d87';
 const CLIENT_SECRET = '3c20d8cbaa0d4e69b882e18064cd00c7';
 const REDIRECT_URI = 'http://localhost:8888/spotify/callback';
@@ -9,8 +10,9 @@ const SCOPE = 'user-read-private user-read-email playlist-read-private playlist-
 
 router.get('/auth', async (req, res) => {
     const state = generateRandomString(16);
+    req.session.redirect = req.query.redirect || 'playlists';
     req.session.state = state;
-    console.log(state);
+    console.log(req.session);
     const authURL = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&response_type=code&redirect_uri=${REDIRECT_URI}&scope=${SCOPE}&state=${state}`;
     res.redirect(authURL);
 });
@@ -29,20 +31,20 @@ router.get('/callback', async (req, res) => {
     {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        Authorization: `Basic ${Buffer.from(
-          `${CLIENT_ID}:${CLIENT_SECRET}`
-        ).toString('base64')}`,
-      }});
+        Authorization: `Basic ${Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString('base64')}`,
+      }
+    });
 
     const accessToken = tokenResponse.data.access_token;
-    const reqData = {
-        streamer: 'Spotify',
-        data: accessToken
+    
+    req.session.sourceStreamer = {
+      streamer: STREAMER,
+      authData: {
+        token: accessToken
+      }
     };
 
-    const response = await axios.post('http://localhost:8888/save-auth-data', reqData);
-    console.log(response.data);
-    res.redirect(`http://localhost:8080/playlists?&uuid=${response.data.uuid}`);
+    res.redirect(`http://localhost:8080/${req.session.redirect}`);
 });
 
 function generateRandomString(length) {

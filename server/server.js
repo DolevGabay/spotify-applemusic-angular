@@ -1,7 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 const session = require('express-session');
-const MongoDBStore = require('connect-mongodb-session')(session);
 const app = express();
 const appleAuth = require('./appleAuth');
 const spotifyAuth = require('./spotifyAuth');
@@ -9,53 +8,41 @@ const { v4: uuidv4 } = require('uuid');
 
 const authData = {};
 app.use(express.json());
+
 app.use(session({
     secret: 'matandolev', // Replace with a secure secret key
     resave: false,
     saveUninitialized: true,
   })
 );
-app.use(cors());
+
+const corsOptions = {
+  origin: 'http://127.0.0.1:8080',
+  credentials: true,
+};
+app.use(cors(corsOptions));
 
 app.use('/apple', appleAuth);
 app.use('/spotify', spotifyAuth);
 
 
-app.post('/save-auth-data', (req, res) => {
-  const uuid = uuidv4();
-  const { streamer, data } = req.body;
-
-  const authDataItem = {
-    streamer,
-    data,
-  };
-
-  authData[uuid] = authDataItem;
-  res.status(200).json({ uuid });
+app.get('/get-source-streamer', (req, res) => {
+  const { sourceStreamer } = req.session;
+  res.status(200).json({ sourceStreamer });
 });
 
-app.get('/get-auth-info', (req, res) => {
-  const uuid = req.query.uuid;
-
-  const authDataItem = authData[uuid];
-
-  res.status(200).json({ authDataItem });
+app.get('/get-dest-streamer', (req, res) => {
+  const { destStreamer } = req.session;
+  res.status(200).json({ destStreamer });
 });
 
 
-app.post('/update-playlist', (req, res) => {
-  const { data } = req.body;
-  playlistSelectedfromApple = data;
-  console.log(playlistSelectedfromApple);
-  res.status(200).send('Playlist updated successfully');
+app.post('/set-playlists', (req, res) => {
+  const { playlists } = req.body;
+  req.session.playlists = playlists;
+  res.sendStatus(201);
 });
-
-app.get('/update-playlist', (req, res) => {
-  res.status(200).json({ playlist: playlistSelectedfromApple });
-});
-
-
 
 const port = process.env.PORT || 8888;  
-console.log(`Listening on port ${port}. Go to /generate-token?key=YOUR_KEY to initiate the token generation.`);
+console.log(`Listening on port ${port}`);
 app.listen(port);

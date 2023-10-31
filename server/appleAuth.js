@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
-const axios = require('axios');
+
+const STREAMER = 'Apple';
 const PRIVATE_KEY = fs.readFileSync('AuthKey_FL3PM9DXWX.p8').toString();
 const TEAM_ID = 'A4VBZCQY97';
 const KEY_ID = 'FL3PM9DXWX';
@@ -24,20 +25,16 @@ const generateToken = () => {
 }
 
 router.get('/auth', async (req, res) => {
-    const reqData = {
-        streamer: 'Apple',
-        data: generateToken()
-    };
-
-    const response = await axios.post('http://localhost:8888/save-auth-data', reqData);
-    console.log(response.data);
-    res.redirect(`http://localhost:8080/playlists?&uuid=${response.data.uuid}`);
-});
-
-router.get('/apple_access_token', async (req, res) => {
     const token = generateToken();
-    res.json({ token }); 
-});
+    const redirect = req.query.redirect || 'playlists';
+    req.session.sourceStreamer = {
+        streamer: STREAMER,
+        authData: {
+            token: token
+        }
+    }
 
+    res.redirect(`http://localhost:8080/${req.redirect}`);
+});
 
 module.exports = router;

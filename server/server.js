@@ -17,7 +17,7 @@ app.use(session({
 );
 
 const corsOptions = {
-  origin: 'http://127.0.0.1:8080',
+  origin: 'http://localhost:8080',
   credentials: true,
 };
 app.use(cors(corsOptions));
@@ -28,6 +28,7 @@ app.use('/spotify', spotifyAuth);
 
 app.get('/get-source-streamer', (req, res) => {
   const { sourceStreamer } = req.session;
+  console.log('test');
   res.status(200).json({ sourceStreamer });
 });
 

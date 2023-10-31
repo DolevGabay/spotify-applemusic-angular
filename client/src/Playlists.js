@@ -1,39 +1,34 @@
 import React, { useEffect, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
-import AppleProvider from './streamers/AppleProvider'
-import SpotifyProvider from './streamers/SpotifyProvider'
+import { useNavigate } from 'react-router-dom'
+import { streamerProviders } from './providers';
 import axios from 'axios';
 
-const streamerProviders = {
-    Spotify: SpotifyProvider,
-    Apple: AppleProvider
-}
+const SOURCE_STREAMER_API = 'http://localhost:8888/get-source-streamer';
 
 const Playlists = () => {
 
     const navigate = useNavigate();
-    const location = useLocation();
     const [userName, setUserName] = useState('');
     const [playlists, setPlaylists] = useState([]);
     const [selectedPlaylists, setSelectedPlaylists] = useState([]);
     const [streamerProvider, setStreamerProvider] = useState(null); 
 
     useEffect(() => {
-        const fetchSourceStreamer = async () => {
-            const response = await axios.get(`http://localhost:8888/get-source-streamer`, { withCredentials: true });
-            console.log(response);
+        const getSourceStreamer = async () => {
+            const response = await axios.get(SOURCE_STREAMER_API, { withCredentials: true });
             const sourceStreamerInfo = response.data.sourceStreamer;
+            console.log(sourceStreamerInfo)
             const sourceStreamer = streamerProviders[sourceStreamerInfo.streamer];
-            const sourceStreamerInstance = new sourceStreamer(sourceStreamerInfo.data, sourceStreamerInfo.streamer);
-
+            const sourceStreamerInstance = new sourceStreamer(sourceStreamerInfo.authData);
             setStreamerProvider(sourceStreamerInstance);
         };
 
-        fetchSourceStreamer();
+        getSourceStreamer();
     }, []);
 
     useEffect(() => {
         const loadUserData = async () => {
+            await streamerProvider.loadProfile();
             const userName = await streamerProvider.loadName();
             const playlists = await streamerProvider.loadPlaylists();
 
@@ -73,7 +68,7 @@ const Playlists = () => {
             destProvider: streamerProvider.provider === 'Spotify' ? 'Apple' : 'Spotify'
         };
 
-        navigate('/transfer', { state: { transferData, streamerProvider } });
+        navigate('/transfer', { state: { transferData } });
     };
     
 
@@ -90,7 +85,7 @@ const Playlists = () => {
              <div className="header">
                 {userName && (
                     <div>
-                        <h2>Hey {userName} please choose the playlist you want to move</h2>
+                        <h2>Hey {userName}, please choose the playlist you want to move</h2>
                     </div>
                 )}
              </div>

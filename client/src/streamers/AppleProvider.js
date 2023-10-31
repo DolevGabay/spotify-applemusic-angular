@@ -5,7 +5,7 @@ class AppleProvider {
     constructor(authData) {
         this.accessToken = authData.token;
         this.instance = window.MusicKit;
-        this.header = { Authorization: 'Bearer ' + accessToken };
+        this.header = { Authorization: 'Bearer ' + this.accessToken };
         this.provider = 'Apple';
         this.name = '';
         this.playlists = [];
@@ -14,10 +14,7 @@ class AppleProvider {
     }
 
     async loadName() {
-        const response = await axios.get('https://api.music.apple.com/v1/me', { headers: { ...this.header }});
-
-        console.log(response);
-
+        return '';
     };
 
     async loadPlaylists() {
@@ -25,7 +22,7 @@ class AppleProvider {
 
         const response = await axios.get(apiEndpoint, { headers: { ...this.header } });
 
-        const playlistsData = response.data.data
+        const playlistsData = response.data.data;
 
         this.playlists = playlistsData.map((playlist) => {
             const imageUrl = playlist.attributes.artwork ? playlist.attributes.artwork.url : 'https://community.spotify.com/t5/image/serverpage/image-id/25294i2836BD1C1A31BDF2?v=v2'
@@ -36,6 +33,8 @@ class AppleProvider {
             }
         });
 
+        console.log(this.playlists);
+        return this.playlists;
     }
 
     async getPlaylistSongs (selectedPlaylists){
@@ -179,10 +178,7 @@ class AppleProvider {
         }
     };
     
-    
-
-
-    async loadData() {
+    async loadProfile() {
         if (this.accessToken == null || this.accessToken == ""){
             await this.loadToken();
         }
@@ -194,8 +190,6 @@ class AppleProvider {
             'Music-User-Token': this.getMusicInstance().musicUserToken,
             'Content-Type': 'application/json'
         };
-
-        await this.loadPlaylists();
     }
 
     async configure() {

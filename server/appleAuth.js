@@ -34,7 +34,7 @@ router.get('/auth', async (req, res) => {
         }
     }
 
-    res.redirect(`http://localhost:8080/${req.redirect}`);
+    res.redirect(`http://localhost:8080/${redirect}`);
 });
 
 module.exports = router;

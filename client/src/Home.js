@@ -1,18 +1,17 @@
 import React from 'react';
-import spotifyAuth from './spotify/spotifyAuth';
+import { authProviders } from './providers';
 import PostMalone from './assets/postmalone.jpeg';
 import TheWeeknd from './assets/theweeknd.jpeg';
 
 const Home = () => {
 
     const onSpotifyLogin = () => {
-        spotifyAuth.spotifyAuth();
-        window.location.href = "http://localhost:8888/spotify/auth";
+        window.location.href = authProviders.Spotify;
     };
 
     const onAppleLogin = () => {
-        window.location.href = 'http://localhost:8888/apple/auth';
-      };
+        window.location.href = authProviders.Apple
+    };
 
     return(
         <div>

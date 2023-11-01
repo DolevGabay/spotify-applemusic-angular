@@ -5,6 +5,7 @@ class SpotifyProvider {
   static PLAYLIST_API = "https://api.spotify.com/v1/me/playlists";
   static TRACKS_API =
     "https://api.spotify.com/v1/playlists/{playlist_id}/tracks";
+  static SONG_URI_API = "https://api.spotify.com/v1/search?q={song.name} {song.artist}&type=track";
   static CREATE_PLAYLIST_API =
     "https://api.spotify.com/v1/users/{user_id}/playlists";
   static ADD_TRACKS_API =
@@ -90,17 +91,48 @@ class SpotifyProvider {
 
     if (response.status === 201) {
       const data = response.data;
-      
       return data.id;
     } else {
-        console.error('Failed to create playlist:', response.status, response.statusText);
-
-        return null;
+      console.error('Failed to create playlist:', response.status, response.statusText);
+      return null;
     }
   }
 
   async addTracksToPlaylist(playlistId, songs) {
-    
+    const songUris = await Promise.all(
+      songs.map(async (song) => {
+        return await this.getSongUri(song);
+      })
+    );
+
+    const response = await axios.post(
+      ADD_TRACKS_API.replace("{playlist_id}", playlistId),
+      { uris: songUris },
+      { headers: this.header }
+    );
+
+    if (response.status === 201) {
+        console.log('success');
+    } else {
+      console.error('Failed to add tracks to playlist:', response.status, response.statusText);
+      return null;
+    }
+  }
+
+  async getSongUri(song) {
+    const response = await axios.get(
+      SONG_URI_API.replace("{song.name}", song.name).replace("{song.artist}", song.artist),
+      { headers: this.header }
+    );
+
+    if (response.status === 200) {
+      const data = response.data;
+      const songUri = data.tracks.items[0].uri;
+      return songUri;
+    } else {
+      console.error('Failed to get song URI:', response.status, response.statusText);
+      return null;
+    }
   }
 
   async loadProfile() {}

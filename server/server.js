@@ -26,15 +26,36 @@ app.use('/apple', appleAuth);
 app.use('/spotify', spotifyAuth);
 
 
-app.get('/get-source-streamer', (req, res) => {
+app.get('/source-streamer', (req, res) => {
   const { sourceStreamer } = req.session;
   console.log('test');
   res.status(200).json({ sourceStreamer });
 });
 
-app.get('/get-dest-streamer', (req, res) => {
+app.get('/dest-streamer', (req, res) => {
   const { destStreamer } = req.session;
-  res.status(200).json({ destStreamer });
+  console.log(req.session);
+  if(destStreamer === undefined) {
+    res.sendStatus(404);
+  } else {
+    res.status(200).json({ destStreamer });
+  }
+});
+
+app.post('/transfer-info', (req, res) => {
+  const { transferData } = req.body;
+  req.session.transferData = transferData;
+  res.sendStatus(201);
+});
+
+app.get('/transfer-info', (req, res) => {
+  const { transferData } = req.session;
+
+  if(transferData === undefined) {
+    res.sendStatus(404);
+  } else {
+    res.status(200).json({ transferData });
+  }
 });
 
 

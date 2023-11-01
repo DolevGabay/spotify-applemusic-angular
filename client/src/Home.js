@@ -6,11 +6,11 @@ import TheWeeknd from './assets/theweeknd.jpeg';
 const Home = () => {
 
     const onSpotifyLogin = () => {
-        window.location.href = authProviders.Spotify;
+        window.location.href = authProviders.Spotify.Playlist;
     };
 
     const onAppleLogin = () => {
-        window.location.href = authProviders.Apple
+        window.location.href = authProviders.Apple.Playlist;
     };
 
     return(

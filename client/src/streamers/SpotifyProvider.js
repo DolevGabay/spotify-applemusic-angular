@@ -1,18 +1,6 @@
 import axios from "axios";
 
 class SpotifyProvider {
-  static PROFILE_API = "https://api.spotify.com/v1/me";
-  static PLAYLIST_API = "https://api.spotify.com/v1/me/playlists";
-  static TRACKS_API =
-    "https://api.spotify.com/v1/playlists/{playlist_id}/tracks";
-  static SONG_URI_API = "https://api.spotify.com/v1/search?q={song.name} {song.artist}&type=track";
-  static CREATE_PLAYLIST_API =
-    "https://api.spotify.com/v1/users/{user_id}/playlists";
-  static ADD_TRACKS_API =
-    "https://api.spotify.com/v1/playlists/{playlist_id}/tracks";
-  static DEFAULT_IMAGE_URL =
-    "https://community.spotify.com/t5/image/serverpage/image-id/25294i2836BD1C1A31BDF2?v=v2";
-
   constructor(authData) {
     this.accessToken = authData.token;
     this.header = { Authorization: "Bearer " + this.accessToken };
@@ -20,6 +8,7 @@ class SpotifyProvider {
   }
 
   async loadName() {
+    const PROFILE_API = "https://api.spotify.com/v1/me";
     const response = await axios.get(PROFILE_API, { headers: this.header });
 
     const data = response.data;
@@ -29,6 +18,9 @@ class SpotifyProvider {
   }
 
   async loadPlaylists() {
+    const PLAYLIST_API = "https://api.spotify.com/v1/me/playlists";
+    const DEFAULT_IMAGE_URL =
+      "https://community.spotify.com/t5/image/serverpage/image-id/25294i2836BD1C1A31BDF2?v=v2";
     const response = await axios.get(PLAYLIST_API, { headers: this.header });
     const data = response.data;
     const rawPlaylists = data.items;
@@ -50,9 +42,13 @@ class SpotifyProvider {
   }
 
   async getSongsFromPlaylist(playlist) {
-    let playlistId = playlist.id;
+    const TRACKS_API =
+      "https://api.spotify.com/v1/playlists/{playlist_id}/tracks";
+    const playlistId = playlist.id;
 
-    const response = await axios.get( TRACKS_API.replace("{playlist_id}", playlistId), { headers: this.header }
+    const response = await axios.get(
+      TRACKS_API.replace("{playlist_id}", playlistId),
+      { headers: this.header }
     );
 
     if (response.status === 200) {
@@ -77,12 +73,14 @@ class SpotifyProvider {
 
   async transferPlaylists(playlistsToTransfer) {
     playlistsToTransfer.forEach(async (playlist) => {
-        const newPlaylistId = await this.createPlaylist(playlist.name);
-        await this.addTracksToPlaylist(newPlaylistId, playlist.songs);
+      const newPlaylistId = await this.createPlaylist(playlist.name);
+      await this.addTracksToPlaylist(newPlaylistId, playlist.songs);
     });
   }
 
   async createPlaylist(name) {
+    const CREATE_PLAYLIST_API =
+      "https://api.spotify.com/v1/users/{user_id}/playlists";
     const response = await axios.post(
       CREATE_PLAYLIST_API.replace("{user_id}", this.userId),
       { name },
@@ -93,12 +91,18 @@ class SpotifyProvider {
       const data = response.data;
       return data.id;
     } else {
-      console.error('Failed to create playlist:', response.status, response.statusText);
+      console.error(
+        "Failed to create playlist:",
+        response.status,
+        response.statusText
+      );
       return null;
     }
   }
 
   async addTracksToPlaylist(playlistId, songs) {
+    const ADD_TRACKS_API =
+      "https://api.spotify.com/v1/playlists/{playlist_id}/tracks";
     const songUris = await Promise.all(
       songs.map(async (song) => {
         return await this.getSongUri(song);
@@ -112,16 +116,25 @@ class SpotifyProvider {
     );
 
     if (response.status === 201) {
-        console.log('success');
+      console.log("success");
     } else {
-      console.error('Failed to add tracks to playlist:', response.status, response.statusText);
+      console.error(
+        "Failed to add tracks to playlist:",
+        response.status,
+        response.statusText
+      );
       return null;
     }
   }
 
   async getSongUri(song) {
+    const SONG_URI_API =
+      "https://api.spotify.com/v1/search?q={song.name} {song.artist}&type=track";
     const response = await axios.get(
-      SONG_URI_API.replace("{song.name}", song.name).replace("{song.artist}", song.artist),
+      SONG_URI_API.replace("{song.name}", song.name).replace(
+        "{song.artist}",
+        song.artist
+      ),
       { headers: this.header }
     );
 
@@ -130,7 +143,11 @@ class SpotifyProvider {
       const songUri = data.tracks.items[0].uri;
       return songUri;
     } else {
-      console.error('Failed to get song URI:', response.status, response.statusText);
+      console.error(
+        "Failed to get song URI:",
+        response.status,
+        response.statusText
+      );
       return null;
     }
   }

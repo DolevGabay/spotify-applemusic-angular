@@ -10,6 +10,12 @@ export const streamerProviders = {
 };
 
 export const authProviders = {
-    Spotify: 'http://localhost:8888/spotify/auth',
-    Apple: 'http://localhost:8888/apple/auth'
+    Spotify: {
+        Playlist: 'http://localhost:8888/spotify/auth?redirect=playlists',
+        Transfer: 'http://localhost:8888/spotify/auth?redirect=transfer'
+    } ,
+    Apple:  {
+        Playlist: 'http://localhost:8888/apple/auth?redirect=playlists',
+        Transfer: 'http://localhost:8888/apple/auth?redirect=transfer'
+    }
 };

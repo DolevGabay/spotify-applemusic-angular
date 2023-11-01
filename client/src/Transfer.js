@@ -4,23 +4,33 @@ import { useLocation } from 'react-router-dom';
 import { streamerProviders, authProviders, DEST_STREAMER_API } from './providers';
 
 const Transfer = () => {
+    const TRANSFER_INFO_API = 'http://localhost:8888/transfer-info';
     const location = useLocation();
-    const { transferData, destProvider } = location.state;
     const [destStreamer, setDestStreamer] = useState(null);
-
+    console.log(location.state);
+    
     useEffect(() => {
         const getDestStreamer = async () => {
-            const response = await axios.get(DEST_STREAMER_API, { withCredentials: true });
+            try {
+                const response = await axios.get(DEST_STREAMER_API, { withCredentials: true });
+                console.log(response);
+                const destStreamerInfo = response.data.destStreamer;
+                const destStreamerObj = streamerProviders[destStreamerInfo.streamer];
+                const destStreamerInstance = new destStreamerObj(destStreamerInfo.authData);
+                setDestStreamer(destStreamerInstance);
+            } catch (error) {
+                console.log(location.state);
+                const { transferData, destProvider } = location.state;
+                const response = await axios.post(TRANSFER_INFO_API, { transferData }, { withCredentials: true });
 
-            if (response.status === 404) {
-                const authUrl = authProviders[destProvider];
+                if (response.status !== 201) {
+                    console.error('Error:', response.statusText);
+                    return;
+                }
+
+                const authUrl = authProviders[destProvider].Transfer;
                 window.location.href = authUrl;
             }
-
-            const destStreamerInfo = response.data.destStreamer;
-            const destStreamerObj = streamerProviders[destStreamerInfo.streamer];
-            const destStreamerInstance = new destStreamerObj(destStreamerInfo.authData);
-            setDestStreamer(destStreamerInstance);
         };
 
         getDestStreamer();
@@ -28,6 +38,7 @@ const Transfer = () => {
 
     useEffect(() => {
         const transferPlaylists = async () => {
+            const transferData = await axios.get(TRANSFER_INFO_API, { withCredentials: true });
             await destStreamer.loadProfile();
             await destStreamer.transferPlaylists(transferData);
         };

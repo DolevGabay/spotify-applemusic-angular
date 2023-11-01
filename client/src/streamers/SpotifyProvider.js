@@ -75,15 +75,10 @@ class SpotifyProvider {
   }
 
   async transferPlaylists(playlistsToTransfer) {
-    const newPlaylists = await Promise.all(
-      playlistsToTransfer.map(async (playlist) => {
-        const newPlaylist = await this.createPlaylist(playlist.name);
-        await this.addTracksToPlaylist(newPlaylist.id, playlist.songs);
-        return newPlaylist;
-      })
-    );
-
-    return newPlaylists;
+    playlistsToTransfer.forEach(async (playlist) => {
+        const newPlaylistId = await this.createPlaylist(playlist.name);
+        await this.addTracksToPlaylist(newPlaylistId, playlist.songs);
+    });
   }
 
   async createPlaylist(name) {
@@ -95,22 +90,17 @@ class SpotifyProvider {
 
     if (response.status === 201) {
       const data = response.data;
-      const newPlaylist = {
-        name: data.name,
-        id: data.id,
-        tracks: data.tracks.total,
-        image: data.images[0].url,
-      };
-
-      return newPlaylist;
+      
+      return data.id;
     } else {
-      console.error(
-        "Failed to create playlist:",
-        response.status,
-        response.statusText
-      );
-      return null;
+        console.error('Failed to create playlist:', response.status, response.statusText);
+
+        return null;
     }
+  }
+
+  async addTracksToPlaylist(playlistId, songs) {
+    
   }
 
   async loadProfile() {}

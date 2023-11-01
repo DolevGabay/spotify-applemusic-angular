@@ -5,7 +5,7 @@ class AppleProvider {
     constructor(authData) {
         this.accessToken = authData.token;
         this.instance = window.MusicKit;
-        this.header = { Authorization: 'Bearer ' + this.accessToken };
+        this.header = '';
         this.provider = 'Apple';
         this.name = '';
         this.playlists = [];
@@ -37,42 +37,26 @@ class AppleProvider {
         return this.playlists;
     }
 
-    async getPlaylistSongs (selectedPlaylists){
-        for(let i = 0; i < selectedPlaylists.length ; i++)
-        {
-            let playlistId = this.playlists[selectedPlaylists[i]].id
-            const playlist = {
-                name:this.playlists[selectedPlaylists[i]].name ,
-                songs: [
-                ]
-            };
-            const apiUrl = 'https://api.music.apple.com/v1/me/library/playlists/{playlist_id}/tracks';
-            try {
-                const response = await axios.get(apiUrl.replace('{playlist_id}', playlistId), {
-                    headers: this.header
-                });
-        
-                if (response.status === 200) {
-                    const songsRes = response.data.data;
-        
-                    //console.log(songs);
-                    for(let j = 0; j <songsRes.length ; j++)
-                        {
-                            const song = {
-                                trackName: songsRes[j].attributes.name,
-                                artist: songsRes[j].attributes.artistName,
-                            }
-                            playlist.songs.push(song)
-                        }
-                        this.PlaylistSongsToTransfer.push(playlist)
-                } else {
-                    console.error('Failed to retrieve playlist songs:', response.status, response.statusText);
-                }
-            } catch (error) {
-                console.error('Error while getting playlist songs:', error);
-            }
+    async getSongsFromPlaylist(playlist) {
+        const apiUrl = `https://api.music.apple.com/v1/me/library/playlists/${playlist.id}/tracks`;
+
+        const response = await axios.get(apiUrl, { headers: this.header });
+
+        if (response.status === 200) {
+            const data = response.data.data;
+            const songs = data.map((item) => {
+                return {
+                    name: item.attributes.name,
+                    artist: item.attributes.artistName,
+                };
+            });
+
+            return songs;
+        } else {
+            console.error('Error fetching playlist:', response.statusText);
+            return null;
         }
-    };
+    }
 
     async insertPlaylist(playlistToInsert) {
         for(let i = 0 ; i < playlistToInsert.length ; i++)

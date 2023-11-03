@@ -15,12 +15,12 @@ const Playlists = () => {
       const response = await axios.get(SOURCE_STREAMER_API, {
         withCredentials: true,
       });
-      const sourceStreamerInfo = response.data.sourceStreamer;
-      console.log(sourceStreamerInfo);
-      const sourceStreamer = streamerProviders[sourceStreamerInfo.streamer];
-      const sourceStreamerInstance = new sourceStreamer(
-        sourceStreamerInfo.authData
-      );
+      
+      const streamer = response.data.streamer;
+      const authData = response.data.authData;
+
+      const sourceStreamer = streamerProviders[streamer];
+      const sourceStreamerInstance = new sourceStreamer(authData);
       setStreamerProvider(sourceStreamerInstance);
     };
 

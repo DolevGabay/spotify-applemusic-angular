@@ -163,9 +163,6 @@ class AppleProvider {
     };
     
     async loadProfile() {
-        if (this.accessToken == null || this.accessToken == ""){
-            await this.loadToken();
-        }
         await this.configure(this.accessToken);
         await this.LogIn();
         //console.log(this.getMusicInstance().musicUserToken);

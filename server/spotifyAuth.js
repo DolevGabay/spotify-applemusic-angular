@@ -34,8 +34,9 @@ router.get('/callback', async (req, res) => {
     });
 
     const accessToken = tokenResponse.data.access_token;
+    const currentAuth = req.session.currentAuth;
     
-    req.session.streamers['source']['authData'] = { token: accessToken };
+    req.session.streamers[currentAuth]['authData'] = { token: accessToken };
     res.redirect(`http://localhost:8080/${req.session.redirect}`);
 });
 

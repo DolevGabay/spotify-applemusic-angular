@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
-import { streamerProviders, authProviders, DEST_STREAMER_API } from './providers';
+import { streamerProviders, DEST_STREAMER_API } from './providers';
 
 const Transfer = () => {
     const TRANSFER_INFO_API = 'http://localhost:8888/transfer-info';
@@ -28,8 +28,10 @@ const Transfer = () => {
                     return;
                 }
 
-                const authUrl = authProviders[destProvider].Transfer;
-                window.location.href = authUrl;
+                const authResponse = await axios.post(DEST_STREAMER_API, { streamer: destProvider, redirect: 'transfer' }, { withCredentials: true });
+
+                const authURL = authResponse.data.authURL;
+                window.location.href = authURL;
             }
         };
 

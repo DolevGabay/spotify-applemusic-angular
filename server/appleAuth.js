@@ -26,14 +26,10 @@ const generateToken = () => {
 
 router.get('/auth', async (req, res) => {
     const token = generateToken();
-    const redirect = req.query.redirect || 'playlists';
-    req.session.sourceStreamer = {
-        streamer: STREAMER,
-        authData: {
-            token: token
-        }
-    }
-
+    const redirect = req.session.redirect;
+    const currentAuth = req.session.currentAuth;
+    console.log('current auth: ', currentAuth);
+    req.session.streamers[currentAuth]['authData'] = { token: token };
     res.redirect(`http://localhost:8080/${redirect}`);
 });
 

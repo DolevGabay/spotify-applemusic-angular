@@ -19,15 +19,15 @@ router.post('/:route', (req, res) => {
     if (!ROUTES.includes(routeParam)) {
         return res.status(400).json({ error: 'Invalid route specified' });
     }
-
+    req.session.currentAuth = routeParam;
     req.session.streamers = {
         [routeParam]: {
             streamer: streamer,
             authData: {}
         }
     };
-    res.header('Access-Control-Allow-Origin', 'http://localhost:8080');
-    res.redirect(authURL);
+
+    res.json({ authURL });
 });
 
 router.get('/:route', (req, res) => {

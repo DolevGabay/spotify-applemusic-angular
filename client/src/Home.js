@@ -1,17 +1,16 @@
 import React from 'react';
-import { authProviders } from './providers';
 import PostMalone from './assets/postmalone.jpeg';
 import TheWeeknd from './assets/theweeknd.jpeg';
+import { SOURCE_STREAMER_API } from './providers';
 import axios from 'axios';
 
 const Home = () => {
 
-    const onSpotifyLogin = () => {
-        axios.post('http://localhost:8888/streamers/source', { streamer: 'Spotify', redirect: 'playlists' }, { withCredentials: true });
-    };
+    const startAuth = async (streamer) => {
+        const response = await axios.post(SOURCE_STREAMER_API, { streamer: streamer, redirect: 'playlists' }, { withCredentials: true });
 
-    const onAppleLogin = () => {
-        window.location.href = authProviders.Apple.Playlist;
+        const authURL = response.data.authURL;
+         window.location.href = authURL;
     };
 
     return(
@@ -49,7 +48,7 @@ const Home = () => {
                                     <h5 className="fw-bold card-title mb-3">
                                         Login to your Spotify account to begin
                                     </h5>
-                                    <button className="btn btn-primary btn-sm" type="button" onClick={ onSpotifyLogin }>
+                                    <button className="btn btn-primary btn-sm" type="button" onClick={() => startAuth('Spotify') }>
                                         Connect Spotify
                                     </button>
                                     </div>
@@ -64,7 +63,7 @@ const Home = () => {
                                     <h5 className="fw-bold card-title mb-3">
                                         Login to your Apple music account to begin
                                     </h5>
-                                    <button className="btn btn-secondary btn-sm" type="button" onClick={ onAppleLogin }>
+                                    <button className="btn btn-secondary btn-sm" type="button" onClick={() => startAuth('Apple') }>
                                         Connect Apple Music
                                     </button>
                                     </div>

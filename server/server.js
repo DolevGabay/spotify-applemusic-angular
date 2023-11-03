@@ -4,7 +4,7 @@ const session = require('express-session');
 const app = express();
 const appleAuth = require('./appleAuth');
 const spotifyAuth = require('./spotifyAuth');
-const { v4: uuidv4 } = require('uuid');
+const streamers = require('./streamers');
 
 const authData = {};
 app.use(express.json());
@@ -24,7 +24,7 @@ app.use(cors(corsOptions));
 
 app.use('/apple', appleAuth);
 app.use('/spotify', spotifyAuth);
-
+app.use('/streamers', streamers);
 
 app.get('/source-streamer', (req, res) => {
   const { sourceStreamer } = req.session;

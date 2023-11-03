@@ -2,11 +2,12 @@ import React from 'react';
 import { authProviders } from './providers';
 import PostMalone from './assets/postmalone.jpeg';
 import TheWeeknd from './assets/theweeknd.jpeg';
+import axios from 'axios';
 
 const Home = () => {
 
     const onSpotifyLogin = () => {
-        window.location.href = authProviders.Spotify.Playlist;
+        axios.post('http://localhost:8888/streamers/source', { streamer: 'Spotify', redirect: 'playlists' }, { withCredentials: true });
     };
 
     const onAppleLogin = () => {

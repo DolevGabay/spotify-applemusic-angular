@@ -1,8 +1,8 @@
 import SpotifyProvider from './streamers/SpotifyProvider'
 import AppleProvider from './streamers/AppleProvider';
 
-export const SOURCE_STREAMER_API = 'http://localhost:8888/source-streamer';
-export const DEST_STREAMER_API = 'http://localhost:8888/dest-streamer';
+export const SOURCE_STREAMER_API = 'http://localhost:8888/streamer/source';
+export const DEST_STREAMER_API = 'http://localhost:8888/streamer/dest';
 
 export const streamerProviders = {
     Spotify: SpotifyProvider,
@@ -15,7 +15,7 @@ export const authProviders = {
         Transfer: 'http://localhost:8888/spotify/auth?redirect=transfer'
     } ,
     Apple:  {
-        Playlist: 'http://localhost:8888/apple/auth?redirect=playlists',
+        Playlist: 'http://localhost:8888/apple/auth',
         Transfer: 'http://localhost:8888/apple/auth?redirect=transfer'
     }
 };

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { streamerProviders, SOURCE_STREAMER_API } from "./providers";
+import "./Playlists.css";
 import axios from "axios";
 
 const Playlists = () => {

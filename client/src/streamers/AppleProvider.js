@@ -58,7 +58,7 @@ class AppleProvider {
         }
     }
 
-    async insertPlaylist(playlistToInsert) {
+    async transferPlaylists(playlistToInsert) {
         for(let i = 0 ; i < playlistToInsert.length ; i++)
         {
             if (!this.accessToken) {
@@ -71,7 +71,7 @@ class AppleProvider {
                     name: playlistName,  
                 }
             };
-        
+            console.log('creating playlist:', playlistName);
             try {
                 const response = await fetch('https://api.music.apple.com/v1/me/library/playlists', {
                     method: 'POST',
@@ -102,7 +102,7 @@ class AppleProvider {
         let songsNotFound = [];
         for(let j = 0 ; j < songs.length ; j++)
         {
-            let songId = await this.searchTrackInApple(songs[j].trackName, songs[j].artist);
+            let songId = await this.searchTrackInApple(songs[j].name, songs[j].artist);
             if(songId != null){
                 this.addTrackToPlaylist(playlistId, songId);
             }

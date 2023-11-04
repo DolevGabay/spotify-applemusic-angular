@@ -39,12 +39,10 @@ const Transfer = () => {
 
     useEffect(() => {
         const transferPlaylists = async () => {
-            const transferData = await axios.get(TRANSFER_INFO_API, { withCredentials: true });
-            console.log(transferData);
+            const response = await axios.get(TRANSFER_INFO_API, { withCredentials: true });
+            const { transferData } = response.data;
             await destStreamer.loadProfile();
-            console.log('test')
             await destStreamer.transferPlaylists(transferData);
-            console.log('test2')
         };
 
         if (destStreamer != null) {

@@ -81,7 +81,7 @@ class SpotifyProvider {
   async createPlaylist(name) {
     const CREATE_PLAYLIST_API =
       "https://api.spotify.com/v1/users/{user_id}/playlists";
-      
+
     const response = await axios.post(
       CREATE_PLAYLIST_API.replace("{user_id}", this.userId),
       { name },

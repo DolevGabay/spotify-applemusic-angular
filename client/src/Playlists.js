@@ -57,7 +57,7 @@ const Playlists = () => {
         };
       })
     );
-
+    
     navigate("/transfer", { state: { transferData, destProvider } });
   };
 

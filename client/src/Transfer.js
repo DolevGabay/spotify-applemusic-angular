@@ -19,7 +19,6 @@ const Transfer = () => {
                 const destStreamerInstance = new destStreamerObj(destStreamerInfo.authData);
                 setDestStreamer(destStreamerInstance);
             } catch (error) {
-                console.log(location.state);
                 const { transferData, destProvider } = location.state;
                 const response = await axios.post(TRANSFER_INFO_API, { transferData }, { withCredentials: true });
 

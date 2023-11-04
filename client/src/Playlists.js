@@ -46,6 +46,7 @@ const Playlists = () => {
   const onTransferClick = async () => {
     const destProvider =
       streamerProvider.provider === "Spotify" ? "Apple" : "Spotify";
+      
     const playlistsToTransfer = playlists.filter((_, index) =>
       selectedPlaylists.includes(index)
     );

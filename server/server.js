@@ -45,6 +45,7 @@ app.get('/dest-streamer', (req, res) => {
 app.post('/transfer-info', (req, res) => {
   const { transferData } = req.body;
   req.session.transferData = transferData;
+  console.log(transferData)
   res.sendStatus(201);
 });
 

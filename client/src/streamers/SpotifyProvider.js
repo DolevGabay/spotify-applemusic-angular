@@ -5,6 +5,7 @@ class SpotifyProvider {
     this.accessToken = authData.token;
     this.header = { Authorization: "Bearer " + this.accessToken };
     this.provider = "Spotify";
+    this.userId = ""
   }
 
   async loadName() {
@@ -12,7 +13,9 @@ class SpotifyProvider {
     const response = await axios.get(PROFILE_API, { headers: this.header });
 
     const data = response.data;
+    console.log(data)
     this.name = data.display_name;
+    this.userId = data.id
 
     return this.name;
   }
@@ -72,6 +75,7 @@ class SpotifyProvider {
   }
 
   async transferPlaylists(playlistsToTransfer) {
+    console.log(playlistsToTransfer)
     playlistsToTransfer.forEach(async (playlist) => {
       const newPlaylistId = await this.createPlaylist(playlist.name);
       await this.addTracksToPlaylist(newPlaylistId, playlist.songs);
@@ -153,7 +157,9 @@ class SpotifyProvider {
     }
   }
 
-  async loadProfile() {}
+  async loadProfile() {
+    await this.loadName();
+  }
 
   async loadData() {
     await this.loadName();

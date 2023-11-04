@@ -14,9 +14,9 @@ const Transfer = () => {
             try {
                 const response = await axios.get(DEST_STREAMER_API, { withCredentials: true });
                 console.log(response);
-                const destStreamerInfo = response.data.destStreamer;
-                const destStreamerObj = streamerProviders[destStreamerInfo.streamer];
-                const destStreamerInstance = new destStreamerObj(destStreamerInfo.authData);
+                const { streamer, authData } = response.data;
+                const destStreamerObj = streamerProviders[streamer];
+                const destStreamerInstance = new destStreamerObj(authData);
                 setDestStreamer(destStreamerInstance);
             } catch (error) {
                 const { transferData, destProvider } = location.state;

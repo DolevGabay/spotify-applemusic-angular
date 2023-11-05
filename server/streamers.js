@@ -36,7 +36,7 @@ router.get('/:route', (req, res) => {
     if (!ROUTES.includes(routeParam)) {
         return res.status(400).json({ error: 'Invalid route specified' });
     }
-
+    console.log(req.session.streamers);
     res.status(200).json(req.session.streamers[req.params.route]);
 });
 

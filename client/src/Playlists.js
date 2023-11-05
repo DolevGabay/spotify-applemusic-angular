@@ -10,6 +10,7 @@ const Playlists = () => {
   const [playlists, setPlaylists] = useState([]);
   const [selectedPlaylists, setSelectedPlaylists] = useState([]);
   const [streamerProvider, setStreamerProvider] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const getSourceStreamer = async () => {
@@ -36,6 +37,7 @@ const Playlists = () => {
 
       setUserName(userName);
       setPlaylists(playlists);
+      setIsLoading(false);
     };
 
     if (streamerProvider != null) {
@@ -80,7 +82,13 @@ const Playlists = () => {
           </div>
         )}
       </div>
-
+      {isLoading ? ( 
+        <div className="loading-indicator">
+        <div className="loading-spinner"></div>
+        </div>
+      
+        )
+        :(
       <div className="playlist-container ">
         <div className="playlist-cards">
           {playlists.map((playlist, index) => (
@@ -103,6 +111,7 @@ const Playlists = () => {
           ))}
         </div>
       </div>
+      )}
 
       {selectedPlaylists.length > 0 && (
         <div style={{ textAlign: "center", marginRight: "20px" }}>

@@ -2,6 +2,7 @@ require('./loadEnvironment');
 const express = require('express');
 const cors = require('cors');
 const session = require('express-session');
+const conn = require('./db/conn');
 const appleAuth = require('./appleAuth');
 const spotifyAuth = require('./spotifyAuth');
 const streamers = require('./streamers');
@@ -30,6 +31,7 @@ app.use('/spotify', spotifyAuth);
 app.use('/streamers', streamers);
 app.use('/transfer', transfer);
 
+conn.getDb();
 app.listen(PORT, () => {
   console.log(`Server is running on port: ${PORT}`);
 });

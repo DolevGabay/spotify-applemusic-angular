@@ -3,22 +3,16 @@ const { MongoClient } = require("mongodb");
 const connectionString = process.env.ATLAS_URI || "";
 const client = new MongoClient(connectionString);
 
-let dbInstance;
-class Database {
-  constructor() {
-    if (!dbInstance) {
-      this.client = client;
-      this.client.connect().then(() => {
-        this.db = this.client.db('spotify-applemusic');
-      });
-      dbInstance = this;
-    }
-    return dbInstance;
-  }
+let db;
 
-  async getDb() {
-    return this.db;
-  }ß
+async function getDb() {
+  if (db) return db;
+
+  await client.connect();
+
+  db = client.db("spotify-applemusic");
+  console.log(db);
+  return db;
 }
 
-module.exports = new Database();
+module.exports = { getDb };

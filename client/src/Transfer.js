@@ -11,20 +11,16 @@ const Transfer = () => {
 
   const startDestAuth = async () => {
     const { transferData, destProvider } = location.state;
-    const response = await axios.post(
-      TRANSFER_INFO_API,
-      { transferData },
-      { withCredentials: true }
-    );
-
-    if (response.status !== 201) {
-      console.error("Error:", response.statusText);
-      return;
-    }
 
     const authResponse = await axios.post(
       DEST_STREAMER_API,
       { streamer: destProvider, redirect: "transfer" },
+      { withCredentials: true }
+    );
+
+    await axios.post(
+      TRANSFER_INFO_API,
+      { transferData },
       { withCredentials: true }
     );
 

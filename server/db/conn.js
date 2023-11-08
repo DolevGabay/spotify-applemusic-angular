@@ -8,11 +8,15 @@ let db;
 async function getDb() {
   if (db) return db;
 
-  await client.connect();
+  try {
+    await client.connect();
 
-  db = client.db("spotify-applemusic");
-  console.log(db);
-  return db;
+    db = client.db("spotify-applemusic");
+    console.log("Connected to MongoDB Atlas");
+    return db;
+  } catch(e) {
+    console.error('Error in connecting to DB,', e);
+  }
 }
 
 module.exports = { getDb };

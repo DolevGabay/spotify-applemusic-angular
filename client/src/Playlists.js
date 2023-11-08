@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { streamerProviders, SOURCE_STREAMER_API } from "./providers";
+import {
+  streamerProviders,
+  SOURCE_STREAMER_API,
+  TRANSFER_API,
+} from "./providers";
 import "./Playlists.css";
 import axios from "axios";
 
@@ -12,43 +16,32 @@ const Playlists = () => {
   const [streamerProvider, setStreamerProvider] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const getSourceStreamer = async () => {
-      const response = await axios.get(SOURCE_STREAMER_API, {
-        withCredentials: true,
-      });
-      
-      const streamer = response.data.streamer;
-      const authData = response.data.authData;
+  const getSourceStreamer = async () => {
+    const response = await axios.get(SOURCE_STREAMER_API, {
+      withCredentials: true,
+    });
+    
+    const { streamer, authData } = response.data;
+    const sourceStreamer = streamerProviders[streamer];
+    const sourceStreamerInstance = new sourceStreamer(authData);
 
-      const sourceStreamer = streamerProviders[streamer];
-      const sourceStreamerInstance = new sourceStreamer(authData);
-      setStreamerProvider(sourceStreamerInstance);
-    };
+    setStreamerProvider(sourceStreamerInstance);
+  };
 
-    getSourceStreamer();
-  }, []);
+  const loadUserData = async () => {
+    await streamerProvider.loadProfile();
+    const userName = await streamerProvider.loadName();
+    const playlists = await streamerProvider.loadPlaylists();
 
-  useEffect(() => {
-    const loadUserData = async () => {
-      await streamerProvider.loadProfile();
-      const userName = await streamerProvider.loadName();
-      const playlists = await streamerProvider.loadPlaylists();
-
-      setUserName(userName);
-      setPlaylists(playlists);
-      setIsLoading(false);
-    };
-
-    if (streamerProvider != null) {
-      loadUserData();
-    }
-  }, [streamerProvider]);
+    setUserName(userName);
+    setPlaylists(playlists);
+    setIsLoading(false);
+  };
 
   const onTransferClick = async () => {
     const destProvider =
       streamerProvider.provider === "Spotify" ? "Apple" : "Spotify";
-      
+
     const playlistsToTransfer = playlists.filter((_, index) =>
       selectedPlaylists.includes(index)
     );
@@ -61,9 +54,26 @@ const Playlists = () => {
         };
       })
     );
-    
-    navigate("/transfer", { state: { transferData, destProvider } });
+
+    await axios.post(
+      TRANSFER_API,
+      { transferData, source: streamerProvider.streamer, dest: destProvider },
+      { withCredentials: true }
+    );
+    navigate("/transfer", { state: { destProvider } });
   };
+
+  useEffect(() => {
+    if (!streamerProvider) {
+      getSourceStreamer();
+    }
+  }, []);
+
+  useEffect(() => {
+    if (streamerProvider != null) {
+      loadUserData();
+    }
+  }, [streamerProvider]);
 
   const onPlaylistClick = (index) => {
     if (selectedPlaylists.includes(index) === false) {
@@ -82,35 +92,33 @@ const Playlists = () => {
           </div>
         )}
       </div>
-      {isLoading ? ( 
+      {isLoading ? (
         <div className="loading-indicator">
-        <div className="loading-spinner"></div>
+          <div className="loading-spinner"></div>
         </div>
-      
-        )
-        :(
-      <div className="playlist-container ">
-        <div className="playlist-cards">
-          {playlists.map((playlist, index) => (
-            <div
-              key={index}
-              className={`playlist-card ${
-                selectedPlaylists.includes(index) ? "selected" : ""
-              }`}
-              onClick={() => onPlaylistClick(index)}
-            >
-              <div className="card-content">
-                <img
-                  src={playlist.image}
-                  alt={playlist.name}
-                  className="playlist-image "
-                />
-                <h3 className="playlist-title">{playlist.name}</h3>
+      ) : (
+        <div className="playlist-container ">
+          <div className="playlist-cards">
+            {playlists.map((playlist, index) => (
+              <div
+                key={index}
+                className={`playlist-card ${
+                  selectedPlaylists.includes(index) ? "selected" : ""
+                }`}
+                onClick={() => onPlaylistClick(index)}
+              >
+                <div className="card-content">
+                  <img
+                    src={playlist.image}
+                    alt={playlist.name}
+                    className="playlist-image "
+                  />
+                  <h3 className="playlist-title">{playlist.name}</h3>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
       )}
 
       {selectedPlaylists.length > 0 && (

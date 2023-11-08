@@ -6,7 +6,7 @@ const conn = require('./db/conn');
 const appleAuth = require('./appleAuth');
 const spotifyAuth = require('./spotifyAuth');
 const streamers = require('./streamers');
-const transfer = require('./transfer');
+const transfers = require('./transfers');
 
 const PORT = process.env.PORT || 8888;
 const app = express();
@@ -29,7 +29,7 @@ app.use(express.json());
 app.use('/apple', appleAuth);
 app.use('/spotify', spotifyAuth);
 app.use('/streamers', streamers);
-app.use('/transfer', transfer);
+app.use('/transfers', transfers);
 
 conn.getDb();
 app.listen(PORT, () => {

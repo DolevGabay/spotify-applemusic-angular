@@ -25,12 +25,11 @@ router.post('/:route', (req, res) => {
         req.session.streamers = {};
     }
 
-    req.session.currentAuth = routeParam;
+    req.session[routeParam] = streamer;
     req.session.streamers = {
         ...req.session.streamers,
-        [routeParam]: {
-            streamer: streamer,
-            authData: {}
+        [streamer]: {
+            auth: {}
         }
     };
 
@@ -44,12 +43,14 @@ router.get('/:route', (req, res) => {
         return res.status(400).json({ error: 'Invalid route specified' });
     }
 
-    if (!req.session.streamers[req.params.route]) {
-        return res.status(404).json('Streamer not found');
+    console.log(req.session);
+    const streamer = req.session[routeParam];
+    if (!req.session.streamers[streamer]) {
+        return res.status(404).json('Streamer did not auth yet.');
         
     }
-    
-    res.status(200).json(req.session.streamers[req.params.route]);
+
+    res.status(200).json(req.session.streamers[streamer]);
 });
 
 module.exports = router;

@@ -2,15 +2,21 @@ import axios from 'axios';
 
 class AppleProvider {
 
-    constructor(authData) {
-        this.accessToken = authData.token;
+    constructor(token) {
+        this.accessToken = token;
         this.instance = window.MusicKit;
-        this.header = '';
         this.provider = 'Apple';
         this.name = '';
         this.playlists = [];
         this.PlaylistSongsToTransfer = [];
+        this.configure();
+        this.LogIn();
 
+        this.header = {
+            Authorization: `Bearer ${this.accessToken}`,
+            'Music-User-Token': this.getMusicInstance().musicUserToken,
+            'Content-Type': 'application/json'
+        };
     }
 
     async loadName() {
@@ -165,12 +171,6 @@ class AppleProvider {
     async loadProfile() {
         await this.configure(this.accessToken);
         await this.LogIn();
-
-        this.header = {
-            Authorization: `Bearer ${this.accessToken}`,
-            'Music-User-Token': this.getMusicInstance().musicUserToken,
-            'Content-Type': 'application/json'
-        };
     }
 
     async configure() {

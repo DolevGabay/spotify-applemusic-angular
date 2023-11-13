@@ -3,10 +3,10 @@ const express = require('express');
 const cors = require('cors');
 const session = require('express-session');
 const conn = require('./db/conn');
-const appleAuth = require('./appleAuth');
-const spotifyAuth = require('./spotifyAuth');
-const streamers = require('./streamers');
-const transfers = require('./transfers');
+const apple = require('./routes/apple');
+const spotify = require('./routes/spotify');
+const auth = require('./routes/auth');
+const transfers = require('./routes/transfers');
 
 const PORT = process.env.PORT || 8888;
 const app = express();
@@ -26,9 +26,9 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 
-app.use('/apple', appleAuth);
-app.use('/spotify', spotifyAuth);
-app.use('/streamers', streamers);
+app.use('/Apple', apple);
+app.use('/Spotify', spotify);
+app.use('/auth', auth);
 app.use('/transfers', transfers);
 
 conn.getDb();

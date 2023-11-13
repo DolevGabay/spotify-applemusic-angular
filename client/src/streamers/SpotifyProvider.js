@@ -1,8 +1,9 @@
 import axios from "axios";
 
 class SpotifyProvider {
-  constructor(authData) {
-    this.accessToken = authData.token;
+  constructor(token) {
+    this.accessToken = token;
+    console.log(this.accessToken);
     this.header = { Authorization: "Bearer " + this.accessToken };
     this.provider = "Spotify";
     this.userId = ""

@@ -1,48 +1,35 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import {
-  streamerProviders,
-  SOURCE_STREAMER_API,
-  TRANSFER_API,
-} from "./providers";
+import { getStreamer } from "../../modules/providers";
+import { isAuthed, startAuth } from "../../modules/authUtils";
 import "./Playlists.css";
-import axios from "axios";
+import { setDestination, setTransferData } from "../../redux/actions/transferActions";
 
 const Playlists = () => {
   const navigate = useNavigate();
-  const [userName, setUserName] = useState("");
-  const [playlists, setPlaylists] = useState([]);
+  const dispatch = useDispatch();
+  const source = useSelector((state) => state.transfer.source);
   const [selectedPlaylists, setSelectedPlaylists] = useState([]);
-  const [streamerProvider, setStreamerProvider] = useState(null);
+  const [sourcePlaylists, setSourcePlaylists] = useState([]);
+  const [sourceStreamer, setSourceStreamer] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const getSourceStreamer = async () => {
-    const response = await axios.get(SOURCE_STREAMER_API, {
-      withCredentials: true,
-    });
-    
-    const { streamer, authData } = response.data;
-    const sourceStreamer = streamerProviders[streamer];
-    const sourceStreamerInstance = new sourceStreamer(authData);
-
-    setStreamerProvider(sourceStreamerInstance);
+    setSourceStreamer(await getStreamer(source));
   };
 
   const loadUserData = async () => {
-    await streamerProvider.loadProfile();
-    const userName = await streamerProvider.loadName();
-    const playlists = await streamerProvider.loadPlaylists();
-
-    setUserName(userName);
-    setPlaylists(playlists);
+    setSourcePlaylists(await sourceStreamer.loadPlaylists());
     setIsLoading(false);
   };
 
   const onTransferClick = async () => {
     const destProvider =
-      streamerProvider.provider === "Spotify" ? "Apple" : "Spotify";
+      sourceStreamer.provider === "Spotify" ? "Apple" : "Spotify";
 
-    const playlistsToTransfer = playlists.filter((_, index) =>
+    const playlistsToTransfer = sourcePlaylists.filter((_, index) =>
       selectedPlaylists.includes(index)
     );
 
@@ -50,30 +37,33 @@ const Playlists = () => {
       playlistsToTransfer.map(async (playlist) => {
         return {
           name: playlist.name,
-          songs: await streamerProvider.getSongsFromPlaylist(playlist),
+          songs: await sourceStreamer.getSongsFromPlaylist(playlist),
         };
       })
     );
-
-    await axios.post(
-      TRANSFER_API,
-      { transferData, source: streamerProvider.streamer, dest: destProvider },
-      { withCredentials: true }
-    );
-    navigate("/transfer", { state: { destProvider } });
+    
+    dispatch(setDestination(destProvider));
+    dispatch(setTransferData(transferData));
+    navigate("/transfer");
   };
 
   useEffect(() => {
-    if (!streamerProvider) {
-      getSourceStreamer();
+    if(!source) {
+      window.location.href = "/";
     }
+
+    if(!isAuthed(source)) {
+      startAuth(source);
+    }
+
+    getSourceStreamer();
   }, []);
 
   useEffect(() => {
-    if (streamerProvider != null) {
+    if (sourceStreamer != null) {
       loadUserData();
     }
-  }, [streamerProvider]);
+  }, [sourceStreamer]);
 
   const onPlaylistClick = (index) => {
     if (selectedPlaylists.includes(index) === false) {
@@ -86,9 +76,9 @@ const Playlists = () => {
   return (
     <div>
       <div className="header">
-        {userName && (
+        {sourcePlaylists.length > 0 && (
           <div>
-            <h2>Hey {userName}, please choose the playlist you want to move</h2>
+            <h2>Please choose the playlist you want to move</h2>
           </div>
         )}
       </div>
@@ -99,7 +89,7 @@ const Playlists = () => {
       ) : (
         <div className="playlist-container ">
           <div className="playlist-cards">
-            {playlists.map((playlist, index) => (
+            {sourcePlaylists.map((playlist, index) => (
               <div
                 key={index}
                 className={`playlist-card ${

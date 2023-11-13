@@ -1,18 +1,17 @@
 import React from 'react';
-import PostMalone from './assets/postmalone.jpeg';
-import TheWeeknd from './assets/theweeknd.jpeg';
-import { SOURCE_STREAMER_API } from './providers';
-import axios from 'axios';
+import PostMalone from '../assets/postmalone.jpeg';
+import TheWeeknd from '../assets/theweeknd.jpeg';
+import { startAuth } from '../modules/authUtils';
+import {useDispatch} from 'react-redux';
+import { setSource } from '../redux/actions/transferActions';
 
 const Home = () => {
+    const dispatch = useDispatch();
 
-    const startAuth = async (streamer) => {
-        const response = await axios.post(SOURCE_STREAMER_API, { streamer: streamer, redirect: 'playlists' }, { withCredentials: true });
-
-        const authURL = response.data.authURL;
-         window.location.href = authURL;
-    };
-
+    const startTransfer = async (streamer) => {
+        dispatch(setSource(streamer));
+        startAuth(streamer);
+    }
     return(
         <div>
            <header className="bg-dark">
@@ -48,7 +47,7 @@ const Home = () => {
                                     <h5 className="fw-bold card-title mb-3">
                                         Login to your Spotify account to begin
                                     </h5>
-                                    <button className="btn btn-primary btn-sm" type="button" onClick={() => startAuth('Spotify') }>
+                                    <button className="btn btn-primary btn-sm" type="button" onClick={() => startTransfer('Spotify') }>
                                         Connect Spotify
                                     </button>
                                     </div>
@@ -63,7 +62,7 @@ const Home = () => {
                                     <h5 className="fw-bold card-title mb-3">
                                         Login to your Apple music account to begin
                                     </h5>
-                                    <button className="btn btn-secondary btn-sm" type="button" onClick={() => startAuth('Apple') }>
+                                    <button className="btn btn-secondary btn-sm" type="button" onClick={() => startTransfer('Apple') }>
                                         Connect Apple Music
                                     </button>
                                     </div>

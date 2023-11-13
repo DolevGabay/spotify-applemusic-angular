@@ -9,14 +9,6 @@ class AppleProvider {
         this.name = '';
         this.playlists = [];
         this.PlaylistSongsToTransfer = [];
-        this.configure();
-        this.LogIn();
-
-        this.header = {
-            Authorization: `Bearer ${this.accessToken}`,
-            'Music-User-Token': this.getMusicInstance().musicUserToken,
-            'Content-Type': 'application/json'
-        };
     }
 
     async loadName() {
@@ -169,8 +161,14 @@ class AppleProvider {
     };
     
     async loadProfile() {
-        await this.configure(this.accessToken);
-        await this.LogIn();
+        this.configure();
+        this.LogIn();
+
+        this.header = {
+            Authorization: `Bearer ${this.accessToken}`,
+            'Music-User-Token': this.getMusicInstance().musicUserToken,
+            'Content-Type': 'application/json'
+        };
     }
 
     async configure() {

@@ -162,10 +162,6 @@ class SpotifyProvider {
     await this.loadName();
   }
 
-  async loadData() {
-    await this.loadName();
-    await this.loadPlaylists();
-  }
 }
 
 export default SpotifyProvider;

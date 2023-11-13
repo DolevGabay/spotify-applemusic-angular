@@ -12,5 +12,6 @@ export async function getStreamer(streamer) {
   const token = state.auth.tokens[streamer];
 
   const streamerInstance = new streamerProviders[streamer](token);
+  await streamerInstance.loadProfile();
   return streamerInstance;
 }

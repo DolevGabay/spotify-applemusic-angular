@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './Contact.css'; 
+import './Contact.css';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -7,6 +7,8 @@ const Contact = () => {
     email: '',
     message: '',
   });
+
+  const [popupMessage, setPopupMessage] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -16,9 +18,40 @@ const Contact = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch('http://localhost:8888/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        // Handle success, e.g., show a success message to the user
+        setPopupMessage('Email sent successfully');
+        // Optionally, you can reset the form after successful submission
+        setFormData({
+          name: '',
+          email: '',
+          message: '',
+        });
+      } else {
+        // Handle error, e.g., show an error message to the user
+        setPopupMessage('Error sending email');
+      }
+    } catch (error) {
+      console.error('Error sending email', error);
+      setPopupMessage('Error sending email');
+    }
   };
 
+  const handlePopupClose = () => {
+    setPopupMessage(null);
+  };
 
   return (
     <div className="contact">
@@ -58,6 +91,13 @@ const Contact = () => {
         </div>
         <button type="submit">Submit</button>
       </form>
+
+      {popupMessage && (
+        <div className="popup">
+          <p>{popupMessage}</p>
+          <button onClick={handlePopupClose}>Close</button>
+        </div>
+      )}
     </div>
   );
 };

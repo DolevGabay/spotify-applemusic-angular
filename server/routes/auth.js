@@ -12,9 +12,8 @@ router.get("/", (req, res) => {
   if (!req.session[streamer]) {
     req.session[streamer] = {};
   }
-  
+
   req.session.redirect = redirect;
-  console.log('here');
   res.redirect(authApis[streamer]);
 });
 

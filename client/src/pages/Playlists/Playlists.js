@@ -11,22 +11,19 @@ const Playlists = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const source = useSelector((state) => state.transfer.source);
+
+  const [sourceStreamer, setSourceStreamer] = useState(null);
   const [selectedPlaylists, setSelectedPlaylists] = useState([]);
   const [sourcePlaylists, setSourcePlaylists] = useState([]);
-  const [sourceStreamer, setSourceStreamer] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const getSourceStreamer = async () => {
-    setSourceStreamer(await getStreamer(source));
-  };
-
-  const loadUserData = async () => {
+  const loadPlaylists = async () => {
     setSourcePlaylists(await sourceStreamer.loadPlaylists());
     setIsLoading(false);
   };
 
   const onTransferClick = async () => {
-    const destProvider =
+    const destination =
       sourceStreamer.provider === "Spotify" ? "Apple" : "Spotify";
 
     const playlistsToTransfer = sourcePlaylists.filter((_, index) =>
@@ -42,7 +39,7 @@ const Playlists = () => {
       })
     );
     
-    dispatch(setDestination(destProvider));
+    dispatch(setDestination(destination));
     dispatch(setTransferData(transferData));
     navigate("/transfer");
   };
@@ -54,14 +51,16 @@ const Playlists = () => {
 
     if(!isAuthed(source)) {
       startAuth(source);
+    } else {
+      getStreamer(source).then((streamer) => {
+        setSourceStreamer(streamer);
+      });
     }
-
-    getSourceStreamer();
   }, []);
 
   useEffect(() => {
     if (sourceStreamer != null) {
-      loadUserData();
+      loadPlaylists();
     }
   }, [sourceStreamer]);
 

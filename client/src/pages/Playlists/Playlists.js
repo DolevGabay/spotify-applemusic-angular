@@ -17,6 +17,26 @@ const Playlists = () => {
   const [sourcePlaylists, setSourcePlaylists] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  useEffect(() => {
+    if(!source) {
+      navigate("/");
+    }
+
+    if(!isAuthed(source)) {
+      startAuth(source);
+    } else {
+      getStreamer(source).then((streamer) => {
+        setSourceStreamer(streamer);
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (sourceStreamer != null) {
+      loadPlaylists();
+    }
+  }, [sourceStreamer]);
+
   const loadPlaylists = async () => {
     setSourcePlaylists(await sourceStreamer.loadPlaylists());
     setIsLoading(false);
@@ -43,26 +63,6 @@ const Playlists = () => {
     dispatch(setTransferData(transferData));
     navigate("/transfer");
   };
-
-  useEffect(() => {
-    if(!source) {
-      window.location.href = "/";
-    }
-
-    if(!isAuthed(source)) {
-      startAuth(source);
-    } else {
-      getStreamer(source).then((streamer) => {
-        setSourceStreamer(streamer);
-      });
-    }
-  }, []);
-
-  useEffect(() => {
-    if (sourceStreamer != null) {
-      loadPlaylists();
-    }
-  }, [sourceStreamer]);
 
   const onPlaylistClick = (index) => {
     if (selectedPlaylists.includes(index) === false) {

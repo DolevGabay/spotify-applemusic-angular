@@ -1,12 +1,12 @@
 const initialState = {
     tokens: {
-        spotify: null,
-        apple: null
+        Spotify: null,
+        Apple: null
     },
 
     isAuthenticated: {
-        spotify: false,
-        apple: false
+        Spotify: false,
+        Apple: false
     }
 }
 

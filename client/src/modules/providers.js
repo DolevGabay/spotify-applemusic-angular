@@ -1,5 +1,5 @@
-import SpotifyProvider from "../streamers/SpotifyProvider";
-import AppleProvider from "../streamers/AppleProvider";
+import SpotifyProvider from "./SpotifyProvider";
+import AppleProvider from "./AppleProvider";
 import { store } from "../redux/store/Store";
 
 export const streamerProviders = {

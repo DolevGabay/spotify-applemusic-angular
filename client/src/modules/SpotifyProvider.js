@@ -9,17 +9,6 @@ class SpotifyProvider {
     this.userId = ""
   }
 
-  async loadName() {
-    const PROFILE_API = "https://api.spotify.com/v1/me";
-    const response = await axios.get(PROFILE_API, { headers: this.header });
-
-    const data = response.data;
-    this.name = data.display_name;
-    this.userId = data.id
-
-    return this.name;
-  }
-
   async loadPlaylists() {
     const PLAYLIST_API = "https://api.spotify.com/v1/me/playlists";
     const DEFAULT_IMAGE_URL =
@@ -159,7 +148,13 @@ class SpotifyProvider {
   }
 
   async loadProfile() {
-    await this.loadName();
+    const PROFILE_API = "https://api.spotify.com/v1/me";
+    
+    const response = await axios.get(PROFILE_API, { headers: this.header });
+    const data = response.data;
+    this.name = data.display_name;
+    this.userId = data.id
+    return this.name;
   }
 
 }

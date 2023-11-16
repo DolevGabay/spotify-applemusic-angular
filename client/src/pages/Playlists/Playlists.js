@@ -33,14 +33,12 @@ const Playlists = () => {
 
   useEffect(() => {
     if (sourceStreamer != null) {
-      loadPlaylists();
+      sourceStreamer.loadPlaylists().then((playlists) => {
+        setSourcePlaylists(playlists);
+        setIsLoading(false);
+      });
     }
   }, [sourceStreamer]);
-
-  const loadPlaylists = async () => {
-    setSourcePlaylists(await sourceStreamer.loadPlaylists());
-    setIsLoading(false);
-  };
 
   const onTransferClick = async () => {
     const destination =

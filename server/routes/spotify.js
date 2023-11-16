@@ -48,7 +48,6 @@ router.get("/callback", async (req, res) => {
   );
 
   const accessToken = tokenResponse.data.access_token;
-
   req.session[STREAMER] = { token: accessToken };
   res.redirect(`${process.env.FRONTEND_BASE_URI}${req.session.redirect}`);
 });

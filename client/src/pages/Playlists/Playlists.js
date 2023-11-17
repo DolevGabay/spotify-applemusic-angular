@@ -75,7 +75,7 @@ const Playlists = () => {
       <div className="header">
         {sourcePlaylists.length > 0 && (
           <div>
-            <h2>Please choose the playlist you want to move</h2>
+            <h2>Please choose the playlist you want to transfer</h2>
           </div>
         )}
       </div>
@@ -84,28 +84,30 @@ const Playlists = () => {
           <div className="loading-spinner"></div>
         </div>
       ) : (
-        <div className="playlist-container ">
-          <div className="playlist-cards">
-            {sourcePlaylists.map((playlist, index) => (
-              <div
-                key={index}
-                className={`playlist-card ${
-                  selectedPlaylists.includes(index) ? "selected" : ""
-                }`}
-                onClick={() => onPlaylistClick(index)}
-              >
-                <div className="card-content">
-                  <img
-                    src={playlist.image}
-                    alt={playlist.name}
-                    className="playlist-image "
-                  />
-                  <h3 className="playlist-title">{playlist.name}</h3>
-                </div>
+        <div className="big-playlists-container">
+      <div className="playlist-container">
+        <div className="playlist-cards">
+          {sourcePlaylists.map((playlist, index) => (
+            <div
+              key={index}
+              className={`playlist-card ${
+                selectedPlaylists.includes(index) ? 'selected' : ''
+              }`}
+              onClick={() => onPlaylistClick(index)}
+            >
+              <div className="card-content">
+                <img
+                  src={playlist.image}
+                  alt={playlist.name}
+                  className="playlist-image"
+                />
+                <h3 className="playlist-title">{playlist.name}</h3>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
+      </div>
+    </div>
       )}
 
       {selectedPlaylists.length > 0 && (

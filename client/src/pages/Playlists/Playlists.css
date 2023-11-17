@@ -1,13 +1,23 @@
 .header {
-    text-align: center;
-    margin-bottom: 1%;
-    margin-top: 1%;
-  }  
+  background-color: rgb(39, 38, 46);
+  color: #ffffff; /* Set your desired text color */
+  padding: 20px;
+  text-align: center;
+}
+
+.header h2 {
+  font-size: 30px;
+  margin: 0;
+}
+  .big-playlists-container {
+    background-color: rgb(39, 38, 46);
+  } 
 
 .playlist-container {
     max-width: 400px;
     margin: 0 auto;
     padding: 20px;
+    
   }
   
   .playlist-header {

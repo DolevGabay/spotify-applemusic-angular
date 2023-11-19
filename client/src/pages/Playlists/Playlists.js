@@ -1,11 +1,15 @@
+import "./Playlists.css";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getStreamer } from "../../modules/providers";
 import { isAuthed, startAuth } from "../../modules/authUtils";
-import "./Playlists.css";
-import { setDestination, setTransferData } from "../../redux/actions/transferActions";
+import {
+  setDestination,
+  setTransferData,
+} from "../../redux/actions/transferActions";
+import PlaylistCard from "../../components/PlaylistCard";
 
 const Playlists = () => {
   const navigate = useNavigate();
@@ -18,11 +22,11 @@ const Playlists = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if(!source) {
+    if (!source) {
       navigate("/");
     }
 
-    if(!isAuthed(source)) {
+    if (!isAuthed(source)) {
       startAuth(source);
     } else {
       getStreamer(source).then((streamer) => {
@@ -56,7 +60,7 @@ const Playlists = () => {
         };
       })
     );
-    
+
     dispatch(setDestination(destination));
     dispatch(setTransferData(transferData));
     navigate("/transfer");
@@ -85,40 +89,30 @@ const Playlists = () => {
         </div>
       ) : (
         <div className="big-playlists-container">
-      <div className="playlist-container">
-        <div className="playlist-cards">
-          {sourcePlaylists.map((playlist, index) => (
-            <div
-              key={index}
-              className={`playlist-card ${
-                selectedPlaylists.includes(index) ? 'selected' : ''
-              }`}
-              onClick={() => onPlaylistClick(index)}
-            >
-              <div className="card-content">
-                <img
-                  src={playlist.image}
-                  alt={playlist.name}
-                  className="playlist-image"
+          <div className="playlist-container">
+            <div className="playlist-cards">
+              {sourcePlaylists.map((playlist, index) => (
+                <PlaylistCard
+                  key={index}
+                  playlist={playlist}
+                  selected={selectedPlaylists.includes(index)}
+                  onClick={() => onPlaylistClick(index)}
                 />
-                <h3 className="playlist-title">{playlist.name}</h3>
-              </div>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
-      </div>
-    </div>
       )}
 
-      {selectedPlaylists.length > 0 && (
+      {sourcePlaylists.length > 0 && (
         <div style={{ textAlign: "center", marginRight: "20px" }}>
-          <a
+          <button
             className="btn btn-primary shadow"
-            role="button"
             onClick={onTransferClick}
+            disabled={selectedPlaylists.length <= 0}
           >
             Transfer
-          </a>
+          </button>
         </div>
       )}
     </div>

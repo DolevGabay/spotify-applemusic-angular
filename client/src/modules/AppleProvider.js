@@ -57,6 +57,7 @@ class AppleProvider {
     }
 
     async transferPlaylists(playlistToInsert) {
+        let songsNotFoundReturn = [];
         for(let i = 0 ; i < playlistToInsert.length ; i++)
         {
             if (!this.accessToken) {
@@ -86,7 +87,17 @@ class AppleProvider {
                     const data = await response.json();
                     const newPlaylistId = data.data[0].id;
                     const songsNotFound = await this.addSongsToApplePlaylist(newPlaylistId, playlistToInsert[i].songs)
-                    console.log('playlist created ! songs not found:', songsNotFound);
+                    if(songsNotFound.length > 0){
+                        console.log('playlist created ! songs not found:', songsNotFound);
+                        const playlist = {
+                            playlistName: playlistName,
+                            songsNotFound: songsNotFound
+                        }
+                        songsNotFoundReturn.push(playlist);
+                    }
+                    else{
+                        console.log('playlist created !');
+                    }
                 } else {
                     console.error('Error creating playlist:', response.status, response.statusText);
                 }
@@ -94,6 +105,7 @@ class AppleProvider {
                 console.error('Error creating playlist:', error);
             }
         }
+        return songsNotFoundReturn;
     };
 
     async addSongsToApplePlaylist (playlistId, songs ) {

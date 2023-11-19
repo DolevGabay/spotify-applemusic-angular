@@ -65,11 +65,23 @@ class SpotifyProvider {
   }
 
   async transferPlaylists(playlistsToTransfer) {
-    console.log(playlistsToTransfer)
+    let songsNotFoundReturn = [];
     playlistsToTransfer.forEach(async (playlist) => {
       const newPlaylistId = await this.createPlaylist(playlist.name);
-      await this.addTracksToPlaylist(newPlaylistId, playlist.songs);
+      let songsNotFound =  await this.addTracksToPlaylist(newPlaylistId, playlist.songs);
+        if(songsNotFound.length > 0){
+          console.log('playlist created ! songs not found:', songsNotFound);
+          const playlist = {
+              playlistName: playlist.name,
+              songsNotFound: songsNotFound
+          }
+          songsNotFoundReturn.push(playlist);
+      }
+      else{
+          console.log('playlist created !');
+      }
     });
+    return songsNotFoundReturn;
   }
 
   async createPlaylist(name) {
@@ -96,11 +108,16 @@ class SpotifyProvider {
   }
 
   async addTracksToPlaylist(playlistId, songs) {
+    let songsNotFound = [];
     const ADD_TRACKS_API =
       "https://api.spotify.com/v1/playlists/{playlist_id}/tracks";
     const songUris = await Promise.all(
       songs.map(async (song) => {
-        return await this.getSongUri(song);
+        let songUri = await this.getSongUri(song);
+        if (songUri === null) {
+          songsNotFound.push(song);
+        }
+        return songUri;
       })
     );
 
@@ -111,7 +128,7 @@ class SpotifyProvider {
     );
 
     if (response.status === 201) {
-      console.log("success");
+      return songsNotFound;
     } else {
       console.error(
         "Failed to add tracks to playlist:",

@@ -59,7 +59,7 @@ app.use('/Spotify', spotify);
 app.use('/auth', auth);
 app.use('/transfers', transfers);
 
-conn.getDb();
+// conn.getDb();
 app.listen(PORT, () => {
   console.log(`Server is running on port: ${PORT}`);
 });

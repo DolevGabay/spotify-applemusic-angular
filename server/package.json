@@ -4,6 +4,7 @@
   "description": "Migrating Spotify playlists to Apple Music and vice-versa",
   "main": "server.js",
   "scripts": {
+    "start": "node server.js",
     "server": "node server.js"
   },
   "author": "Matan Tsach and Dolev Gabay",
@@ -24,5 +25,8 @@
     "requests": "^0.3.0",
     "smtp-client": "^0.4.0",
     "uuid": "^9.0.1"
+  },
+  "engines": {
+    "node": "21.x"
   }
 }

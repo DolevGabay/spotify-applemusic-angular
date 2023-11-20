@@ -54,6 +54,10 @@ app.post('/send-email', async (req, res) => {
   }
 });
 
+app.get('/', (req, res) => {
+  res.send('Server is running');
+});
+
 app.use('/Apple', apple);
 app.use('/Spotify', spotify);
 app.use('/auth', auth);

@@ -20,7 +20,7 @@ app.use(session({
 );
 
 const corsOptions = {
-  origin: process.env.FRONTEND_BASE_URI,
+  origin: 'http://localhost:8080',
   credentials: true,
 };
 

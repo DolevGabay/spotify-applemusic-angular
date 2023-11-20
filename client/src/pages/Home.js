@@ -2,6 +2,7 @@ import React from 'react';
 import { startAuth } from '../modules/authUtils';
 import {useDispatch} from 'react-redux';
 import { setSource } from '../redux/actions/transferActions';
+import { Link } from 'react-router-dom';
 
 const Home = () => {
     const dispatch = useDispatch();
@@ -91,6 +92,53 @@ const Home = () => {
               </div>
             </div>
           </header>
+          <section className="py-5" id='services'>
+            <div className="container py-5">
+              <div className="row mb-4 mb-lg-5">
+                <div className="col-md-8 col-xl-6 text-center mx-auto">
+                  <p className="fw-bold text-success mb-2">Our Services</p>
+                  <h3 className="fw-bold">What we can do for you</h3>
+                </div>
+              </div>
+
+              {/* First Service */}
+              <div className="row row-cols-1 row-cols-md-2 mx-auto" style={{ maxWidth: '900px' }}>
+                <div className="col mb-5">
+                <img
+                    className="rounded img-fluid"
+                    src="assets/img/products/applespotify.png"
+                    alt="Service 1"
+                    style={{ boxShadow: 'none', border: 'none' }}
+                  />
+                </div>
+                <div className="col d-md-flex align-items-md-end align-items-lg-center mb-5">
+                  <div>
+                    <h5 className="fw-bold">Transfer playlists&nbsp;</h5>
+                    <p className="text-muted mb-4">We will help you to transfer your playlists from one music streamer to other.</p>
+                    <button className="btn btn-primary shadow" type="button">
+                      <a href="/">Try it now!</a>
+                    </button>                  
+                    </div>
+                </div>
+              </div>
+
+              {/* Second Service */}
+              <div className="row row-cols-1 row-cols-md-2 mx-auto" style={{ maxWidth: '900px' }}>
+                <div className="col order-md-last mb-5">
+                  <img className="rounded img-fluid shadow" src="assets/img/products/2.jpg" alt="Service 2"  style={{ boxShadow: 'none', border: 'none' }}/>
+                </div>
+                <div className="col d-md-flex align-items-md-end align-items-lg-center mb-5">
+                  <div>
+                    <h5 className="fw-bold">Stay tuned&nbsp;</h5>
+                    <p className="text-muted mb-4">We will help you to stay update on a playlist you like, when the playlist will update, yours will too.</p>
+                    <button className="btn btn-primary shadow" type="button">
+                      <a href="/">Coming soon!</a>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
           <section className="py-5 mt-5" id='about'>
             <div className="container py-5">
               <div className="row mb-5" style={{ marginTop: '0px', paddingBottom: '0px', marginBottom: '30px' }}>

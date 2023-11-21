@@ -1,11 +1,6 @@
 const express = require("express");
 const router = express.Router();
 
-const authApis = {
-  Spotify: `/Spotify/auth`,
-  Apple: `/Apple/auth`,
-};
-
 router.get("/", (req, res) => {
   const { streamer, redirect } = req.query;
 
@@ -14,7 +9,7 @@ router.get("/", (req, res) => {
   }
 
   req.session.redirect = redirect;
-  res.redirect(authApis[streamer]);
+  res.redirect(`/${streamer}/auth`);
 });
 
 module.exports = router;

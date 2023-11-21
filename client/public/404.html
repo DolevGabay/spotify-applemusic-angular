@@ -1,19 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8" />
-  <title>Redirecting</title>
-  <script>
-    // Check if the sessionStorage redirect key exists
-    if (sessionStorage.redirect) {
-      const redirectPath = sessionStorage.redirect;
-      delete sessionStorage.redirect;
-      // Redirect to the original requested path including the repository name
-      window.location.href = '/spotify-applemusic' + redirectPath;
-    } else {
-      // If no redirect is needed, go to the homepage of the GitHub Pages site
-      window.location.href = '/spotify-applemusic/';
-    }
+  <meta charset="utf-8">
+  <title>Redirecting...</title>
+  <script type="text/javascript">
+    // Stores the wrong URL in sessionStorage and redirects to the base URL
+    sessionStorage.redirect = location.pathname;
+    window.location.replace('/spotify-applemusic/');
   </script>
 </head>
 <body>

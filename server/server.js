@@ -65,5 +65,5 @@ app.use('/transfers', transfers);
 
 // conn.getDb();
 app.listen(PORT, () => {
-  console.log(`Server is running on port: ${PORT} ${process.env.FRONTEND_BASE_URI}`);
+  console.log(`Server is running on port: ${PORT}`);
 });

@@ -9,6 +9,14 @@ import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor } from "./redux/store/Store"; // Updated import
 
+useEffect(() => {
+  if (sessionStorage.redirect) {
+    const redirect = sessionStorage.redirect;
+    delete sessionStorage.redirect;
+    window.history.replaceState(null, null, redirect);
+  }
+}, []);
+
 const App = () => {
   return (
     <Provider store={store}>

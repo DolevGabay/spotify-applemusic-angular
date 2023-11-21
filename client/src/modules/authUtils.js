@@ -3,13 +3,13 @@ import { login } from "../redux/actions/authActions";
 import axios from "axios";
 
 export function startAuth(streamer, redirect = "playlists") {
-  window.location.href = `${process.env.REACT_APP_API_BASE_URL}/auth?streamer=${streamer}&redirect=${redirect}`;
+  window.location.href = `${process.env.REACT_APP_BACKEND_API}/auth?streamer=${streamer}&redirect=${redirect}`;
 }
 
 export async function isAuthed(streamer) {
   try {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_BASE_URL}/${streamer}/token`,
+      `${process.env.REACT_APP_BACKEND_API}/${streamer}/token`,
       {
         withCredentials: true,
       }

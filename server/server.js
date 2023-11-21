@@ -54,7 +54,7 @@ app.post('/send-email', async (req, res) => {
   }
 });
 
-app.get('/', (req, res) => {
+app.get('/', (_, res) => {
   res.send('Server is running');
 });
 

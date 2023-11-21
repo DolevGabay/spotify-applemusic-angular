@@ -14,7 +14,7 @@ const App = () => {
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <div>
-          <BrowserRouter>
+          <BrowserRouter basename="/spotify-applemusic">
             <Navbar />
             <Routes>
               <Route path="/" element={<Home />} />

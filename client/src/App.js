@@ -14,15 +14,7 @@ import { useNavigate } from "react-router-dom";
 const App = () => {
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // Check if there was a redirect from the 404.html
-    const redirectPath = sessionStorage.getItem("redirect");
-    if (redirectPath) {
-      sessionStorage.removeItem("redirect"); // Clear the stored path
-      navigate(redirectPath); // Redirect to the actual path
-    }
-  }, [navigate]);
-  
+
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>

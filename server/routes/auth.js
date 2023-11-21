@@ -2,8 +2,8 @@ const express = require("express");
 const router = express.Router();
 
 const authApis = {
-  Spotify: "http://localhost:8888/Spotify/auth",
-  Apple: "http://localhost:8888/Apple/auth",
+  Spotify: `/Spotify/auth`,
+  Apple: `/Apple/auth`,
 };
 
 router.get("/", (req, res) => {

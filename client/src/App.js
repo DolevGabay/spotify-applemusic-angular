@@ -11,11 +11,8 @@ import { store, persistor } from "./redux/store/Store"; // Updated import
 import { useEffect } from "react";
 
 useEffect(() => {
-  if (sessionStorage.redirect) {
-    const redirect = sessionStorage.redirect;
-    delete sessionStorage.redirect;
-    window.history.replaceState(null, null, redirect);
-  }
+  // Store the current path in sessionStorage before redirecting
+  sessionStorage.redirect = window.location.pathname.slice('/spotify-applemusic'.length);
 }, []);
 
 const App = () => {

@@ -1,16 +1,22 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Redirecting to /</title>
-    <meta http-equiv="refresh" content="0; URL=/" />
-    <script>
-      // If the page isn't found (404), redirect to the homepage which loads the React app
-      // Then React Router will handle the routing to the correct component
-      sessionStorage.redirect = location.pathname;
-    </script>
-  </head>
-  <body>
-    If you are not redirected, <a href="/">click here</a>.
-  </body>
+<head>
+  <meta charset="utf-8" />
+  <title>Redirecting</title>
+  <script>
+    // Check if the sessionStorage redirect key exists
+    if (sessionStorage.redirect) {
+      const redirectPath = sessionStorage.redirect;
+      delete sessionStorage.redirect;
+      // Redirect to the original requested path including the repository name
+      window.location.href = '/spotify-applemusic' + redirectPath;
+    } else {
+      // If no redirect is needed, go to the homepage of the GitHub Pages site
+      window.location.href = '/spotify-applemusic/';
+    }
+  </script>
+</head>
+<body>
+  Redirecting...
+</body>
 </html>

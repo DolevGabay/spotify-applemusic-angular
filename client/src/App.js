@@ -8,18 +8,13 @@ import Playlists from "./pages/Playlists/Playlists";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor } from "./redux/store/Store"; // Updated import
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 
 const App = () => {
-  const navigate = useNavigate();
-
-
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <div>
-          <BrowserRouter basename="/spotify-applemusic">
+          <BrowserRouter>
             <Navbar />
             <Routes>
               <Route path="/" element={<Home />} />

@@ -18,7 +18,7 @@ export async function getStreamer(streamer) {
     return streamerInstance;
   } catch(error) {
     console.log(error);
-    startAuth(streamer);
+    // startAuth(streamer);
     return null;
   }
 

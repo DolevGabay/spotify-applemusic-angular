@@ -22,7 +22,6 @@ const Playlists = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    /*
     if (!source) {
       navigate("/");
     }
@@ -36,7 +35,7 @@ const Playlists = () => {
         console.log('not authed');
         startAuth(source);
       }
-    });*/
+    });
   }, []);
 
   useEffect(() => {

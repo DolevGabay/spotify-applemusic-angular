@@ -7,7 +7,6 @@ export function startAuth(streamer, redirect = "playlists") {
 }
 
 export async function isAuthed(streamer) {
-  console.log('Looking for token');
   try {
     const response = await axios.get(
       `${process.env.REACT_APP_BACKEND_API}/${streamer}/token`,

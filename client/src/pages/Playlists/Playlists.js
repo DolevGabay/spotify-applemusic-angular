@@ -26,13 +26,15 @@ const Playlists = () => {
       navigate("/");
     }
 
-    if (!isAuthed(source)) {
-      startAuth(source);
-    } else {
-      getStreamer(source).then((streamer) => {
-        setSourceStreamer(streamer);
-      });
-    }
+    isAuthed(source).then((authed) => {
+      if (authed) {
+        getStreamer(source).then((streamer) => {
+          setSourceStreamer(streamer);
+        });
+      } else {
+        startAuth(source);
+      }
+    });
   }, []);
 
   useEffect(() => {

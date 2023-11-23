@@ -3,7 +3,6 @@ import axios from "axios";
 class SpotifyProvider {
   constructor(token) {
     this.accessToken = token;
-    console.log(this.accessToken);
     this.header = { Authorization: "Bearer " + this.accessToken };
     this.provider = "Spotify";
     this.userId = ""
@@ -14,7 +13,6 @@ class SpotifyProvider {
     const DEFAULT_IMAGE_URL =
       "https://community.spotify.com/t5/image/serverpage/image-id/25294i2836BD1C1A31BDF2?v=v2";
     const response = await axios.get(PLAYLIST_API, { headers: this.header });
-    console.log(response);
     const data = response.data;
     const rawPlaylists = data.items;
 
@@ -30,7 +28,6 @@ class SpotifyProvider {
       };
     });
 
-    console.log(playlists);
     return playlists;
   }
 

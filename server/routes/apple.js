@@ -12,7 +12,7 @@ router.get("/auth", async (req, res) => {
   const accessToken = generateToken();
   const redirect = req.session.redirect;
   req.session[STREAMER] = { token: accessToken };
-  res.redirect(`${process.env.FRONTEND_BASE_URI}${redirect}`);
+  res.redirect(`${process.env.FRONTEND_BASE_URI}/${redirect}`);
 });
 
 router.get("/token", async (req, res) => {

@@ -9,7 +9,9 @@ const auth = require('./routes/auth');
 const transfers = require('./routes/transfers');
 const nodemailer = require('nodemailer');
 const redis = require('redis');
-const connectRedis = require('connect-redis');
+const ConnectRedis = require('connect-redis');
+
+const RedisStore = ConnectRedis(session);
 
 // Constants
 const PORT = process.env.PORT || 8888;
@@ -21,7 +23,6 @@ const redisClient = redis.createClient({
 });
 redisClient.on('error', (err) => console.log('Redis Client Error', err));
 redisClient.connect();
-const RedisStore = connectRedis(session);
 
 // Session
 app.use(session({

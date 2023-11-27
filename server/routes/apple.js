@@ -12,10 +12,12 @@ router.get("/auth", async (req, res) => {
   const accessToken = generateToken();
   const redirect = req.session.redirect;
   req.session[STREAMER] = { token: accessToken };
+  console.log(req.session);
   res.redirect(`${process.env.FRONTEND_BASE_URI}/${redirect}`);
 });
 
 router.get("/token", async (req, res) => {
+  console.log(req.session);
   const token = req.session[STREAMER]?.token;
   if (!token) {
     res.status(404).json("Streamer did not auth yet.");

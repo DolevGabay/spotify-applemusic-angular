@@ -32,7 +32,6 @@ const Playlists = () => {
           setSourceStreamer(streamer);
         });
       } else {
-        alert('not authed');
         console.log('not authed');
         startAuth(source);
       }

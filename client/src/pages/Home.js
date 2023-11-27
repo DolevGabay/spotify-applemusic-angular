@@ -125,8 +125,12 @@ const Home = () => {
               {/* Second Service */}
               <div className="row row-cols-1 row-cols-md-2 mx-auto" style={{ maxWidth: '900px' }}>
                 <div className="col order-md-last mb-5">
-                  <img className="rounded img-fluid shadow" src="assets/img/products/2.jpg" alt="Service 2"  style={{ boxShadow: 'none', border: 'none' }}/>
-                </div>
+                <img
+                    className="rounded img-fluid"
+                    src="assets/img/products/listen-no-bg.png"
+                    alt="Service 1"
+                    style={{ boxShadow: 'none', border: 'none' }}
+                  />                </div>
                 <div className="col d-md-flex align-items-md-end align-items-lg-center mb-5">
                   <div>
                     <h5 className="fw-bold">Stay tuned&nbsp;</h5>

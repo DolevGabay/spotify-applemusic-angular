@@ -1,4 +1,5 @@
 const express = require("express");
+const session = require("express-session");
 const router = express.Router();
 
 router.get("/", (req, res) => {
@@ -6,8 +7,16 @@ router.get("/", (req, res) => {
 
   req.session[streamer] = {};
   req.session.redirect = redirect;
-
-  res.redirect(`/${streamer}/auth`);
+  console.log('Starting auth', session);
+  req.session.save(err => {
+    if (err) {
+      // handle error
+      console.error(err);
+      res.status(500).send('Error saving session');
+    } else {
+      res.redirect(`/${streamer}/auth`);
+    }
+  });
 });
 
 module.exports = router;

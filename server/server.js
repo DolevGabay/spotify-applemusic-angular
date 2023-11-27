@@ -13,11 +13,14 @@ const PORT = process.env.PORT || 8888;
 const app = express();
 
 app.use(session({
-    secret: 'matandolev', // Replace with a secure secret key
-    resave: false,
-    saveUninitialized: true,
-  })
-);
+  secret: 'matandolev', // Replace with your secret key
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+      secure: true, // Ensure cookies are only sent over HTTPS
+      sameSite: 'none' // Allow cookies to be sent with cross-site requests
+  }
+}));
 
 const corsOptions = {
   origin: process.env.FRONTEND_BASE_URI,

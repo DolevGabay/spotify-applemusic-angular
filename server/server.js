@@ -28,11 +28,7 @@ app.use(session({
   store: new RedisStore({ client: redisClient }),
   secret: 'matandolev', // Replace with your secret key
   resave: false,
-  saveUninitialized: true,
-  cookie: {
-      secure: true, // Ensure cookies are only sent over HTTPS
-      sameSite: 'none' // Allow cookies to be sent with cross-site requests
-  }
+  saveUninitialized: true
 }));
 
 // Cors

@@ -7,7 +7,7 @@ router.get("/", (req, res) => {
 
   req.session[streamer] = {};
   req.session.redirect = redirect;
-  console.log('Starting auth', session);
+  console.log('Starting auth', req.session.id);
   req.session.save(err => {
     if (err) {
       // handle error

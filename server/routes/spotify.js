@@ -10,6 +10,7 @@ const SCOPE =
   "user-read-private user-read-email playlist-read-private playlist-read-collaborative user-library-read user-top-read user-read-recently-played user-follow-read user-follow-modify user-read-playback-state user-modify-playback-state user-read-playback-position user-read-currently-playing playlist-read-private playlist-modify-private playlist-modify-public";
 
 router.get("/auth", async (req, res) => {
+  console.log('Auth', req.session.id);
   const state = generateRandomString(16);
   req.session.state = state;
   const authURL = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&response_type=code&redirect_uri=${REDIRECT_URI}&scope=${SCOPE}&state=${state}`;
@@ -28,6 +29,7 @@ router.get("/token", async (req, res) => {
 });
 
 router.get("/callback", async (req, res) => {
+  console.log('Callback', req.session.id);
   const { code, state } = req.query;
   const storedState = req.session.state;
   if (state !== storedState) {

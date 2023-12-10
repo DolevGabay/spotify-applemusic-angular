@@ -24,6 +24,7 @@ redisClient.on('error', (err) => console.log('Redis Client Error', err));
 redisClient.connect();
 
 // Session
+app.set('trust proxy', 1);
 app.use(session({
   store: new RedisStore({ client: redisClient }),
   secret: 'matandolev', // Replace with your secret key

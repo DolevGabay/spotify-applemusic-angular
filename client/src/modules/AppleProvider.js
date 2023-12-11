@@ -190,11 +190,12 @@ class AppleProvider {
 
   async loadProfile() {
     this.configure();
-
+    console.log('loadProfile');
     if (this.isLoggedIn()) {
       try {
+        console.log('loadProfile try');
         await this.getMusicInstance().authorize();
-
+        console.log('loaded', this.getMusicInstance().musicUserToken);
         this.header = {
           Authorization: `Bearer ${this.accessToken}`,
           "Music-User-Token": this.getMusicInstance().musicUserToken,

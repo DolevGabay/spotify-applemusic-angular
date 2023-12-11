@@ -191,7 +191,7 @@ class AppleProvider {
   async loadProfile() {
     this.configure();
     console.log('loadProfile');
-    if (this.isLoggedIn()) {
+    if (!this.isLoggedIn()) {
       try {
         console.log('loadProfile try');
         await this.getMusicInstance().authorize();

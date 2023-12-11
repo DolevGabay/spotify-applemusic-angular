@@ -29,7 +29,7 @@ app.use(session({
   store: new RedisStore({ client: redisClient }),
   secret: 'matandolev', // Replace with your secret key
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: false,
   cookie: {
     secure: true,
     SameSite: 'None'

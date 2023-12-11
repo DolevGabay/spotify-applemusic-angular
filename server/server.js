@@ -26,14 +26,16 @@ redisClient.connect();
 // Session
 app.set('trust proxy', 1);
 app.use(session({
-  store: new RedisStore({ client: redisClient }),
   secret: 'matandolev', // Replace with your secret key
   resave: false,
   saveUninitialized: false,
   cookie: {
     secure: true,
-    sameSite: 'none'
-  }
+    httpOnly: true,
+    sameSite: 'none',
+    maxAge: 60 * 60 * 24 * 1000
+  },
+  store: new RedisStore({ client: redisClient })
 }));
 
 // Cors
@@ -87,5 +89,5 @@ app.use('/transfers', transfers);
 
 // Server Start
 app.listen(PORT, () => {
-  console.log(`Server is running on port: ${PORT}`);
+  console.log(`Server is running on port: ${PORT} with fixed page.`);
 });

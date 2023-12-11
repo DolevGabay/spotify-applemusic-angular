@@ -9,6 +9,7 @@ export function startAuth(streamer, redirect = "playlists") {
 export async function isAuthed(streamer) {
   console.log("entering isAuthed");
   try {
+    console.log("entering try");
     const response = await axios.get(`/api/${streamer}/token`, {
       withCredentials: true,
     });

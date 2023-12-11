@@ -32,7 +32,7 @@ const Playlists = () => {
           setSourceStreamer(streamer);
         });
       } else {
-        navigate("/");
+        console.log('Not authed');
       }
     });
   }, []);

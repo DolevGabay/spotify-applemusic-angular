@@ -32,7 +32,7 @@ app.use(session({
   saveUninitialized: false,
   cookie: {
     secure: true,
-    SameSite: 'None'
+    sameSite: 'none'
   }
 }));
 

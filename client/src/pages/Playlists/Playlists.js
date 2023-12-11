@@ -32,8 +32,7 @@ const Playlists = () => {
           setSourceStreamer(streamer);
         });
       } else {
-        console.log('not authed');
-        startAuth(source);
+        navigate("/");
       }
     });
   }, []);

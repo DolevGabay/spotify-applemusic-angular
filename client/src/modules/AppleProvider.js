@@ -15,7 +15,6 @@ class AppleProvider {
   }
 
   async loadPlaylists() {
-    console.log(this.header)
     const apiEndpoint = "https://api.music.apple.com/v1/me/library/playlists";
 
     const response = await axios.get(apiEndpoint, {
@@ -205,6 +204,13 @@ class AppleProvider {
       } catch (error) {
         console.error("Error authorizing:", error);
       }
+    }
+    else {
+      this.header = {
+        Authorization: `Bearer ${this.accessToken}`,
+        "Music-User-Token": this.getMusicInstance().musicUserToken,
+        "Content-Type": "application/json",
+      };
     }
   }
 

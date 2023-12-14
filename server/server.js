@@ -16,27 +16,35 @@ const RedisStore = require("connect-redis").default;
 const PORT = process.env.PORT || 8888;
 const app = express();
 
-// Redis
-const redisClient = redis.createClient({
-  url: process.env.REDIS_URL // Redis URL from environment variable
-});
-redisClient.on('error', (err) => console.log('Redis Client Error', err));
-redisClient.connect();
-
 // Session
-app.set('trust proxy', 1);
-app.use(session({
-  secret: 'matandolev', // Replace with your secret key
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    secure: true,
-    httpOnly: true,
-    sameSite: 'none',
-    maxAge: 60 * 60 * 24 * 1000
-  },
-  store: new RedisStore({ client: redisClient })
-}));
+if (process.env.NODE_ENV === 'production') {
+  // Redis
+  const redisClient = redis.createClient({
+    url: process.env.REDIS_URL // Redis URL from environment variable
+  });
+  redisClient.on('error', (err) => console.log('Redis Client Error', err));
+  redisClient.connect();
+  
+  app.set('trust proxy', 1);
+  app.use(session({
+    secret: 'matandolev', // Replace with your secret key
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: true,
+      httpOnly: true,
+      sameSite: 'none',
+      maxAge: 60 * 60 * 24 * 1000
+    },
+    store: new RedisStore({ client: redisClient })
+  }));
+} else {
+  app.use(session({
+    secret: 'matandolev', // Replace with your secret key
+    resave: false,
+    saveUninitialized: false,
+  }));
+}
 
 // Cors
 const corsOptions = {

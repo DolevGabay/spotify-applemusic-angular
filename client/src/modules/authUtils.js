@@ -8,8 +8,11 @@ export function startAuth(streamer, redirect = "playlists") {
   const queryString = `?streamer=${streamer}&redirect=${redirect}`;
   const url = baseUrl + "/auth" + queryString;
   console.log(url);
-  window.location.href = url;
+  
+  // Use window.location.replace() to replace the current URL
+  window.location.replace(url);
 }
+
 
 export async function isAuthed(streamer) {
   console.log("entering isAuthed");

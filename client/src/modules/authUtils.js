@@ -4,7 +4,11 @@ import axios from "axios";
 
 export function startAuth(streamer, redirect = "playlists") {
   console.log(process.env.REACT_APP_BACKEND_API);
-  window.location.href = `${process.env.REACT_APP_BACKEND_API}/auth?streamer=${streamer}&redirect=${redirect}`;
+  const baseUrl = process.env.REACT_APP_BACKEND_API;
+  const queryString = `?streamer=${streamer}&redirect=${redirect}`;
+  const url = baseUrl + "/auth" + queryString;
+  console.log(url);
+  window.location.href = url;
 }
 
 export async function isAuthed(streamer) {

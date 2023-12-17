@@ -1,8 +1,0 @@
-{
-    "rewrites": [
-      {
-        "source": "/api/:path*",
-        "destination": "https://spotify-applemusic-server-9385dc7b7ee6.herokuapp.com/:path*"
-      }
-    ]
-}

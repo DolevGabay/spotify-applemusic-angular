@@ -7,12 +7,8 @@ export function startAuth(streamer, redirect = "playlists") {
   const baseUrl = process.env.REACT_APP_BACKEND_API;
   const queryString = `?streamer=${streamer}&redirect=${redirect}`;
   const url = baseUrl + "/auth" + queryString;
-  console.log(url);
-  
-  // Use window.location.replace() to replace the current URL
-  window.location.replace(url);
+  window.location.href = url;
 }
-
 
 export async function isAuthed(streamer) {
   console.log("entering isAuthed");

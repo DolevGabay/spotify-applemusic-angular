@@ -49,7 +49,7 @@ if (process.env.NODE_ENV === 'production') {
 
 // Cors
 const corsOptions = {
-  origin: `https://*.${process.env.FRONTEND_BASE_URI}`,
+  origin: `https://www.${process.env.FRONTEND_BASE_URI}`,
   credentials: true,
 };
 app.use(cors(corsOptions));

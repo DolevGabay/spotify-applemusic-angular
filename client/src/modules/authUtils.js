@@ -17,7 +17,7 @@ export async function isAuthed(streamer) {
     console.log(response);
     const { token } = response.data;
     store.dispatch(login(streamer, token));
-  } catch (error) {xw
+  } catch (error) {
     console.log(error);
     return false;
   }

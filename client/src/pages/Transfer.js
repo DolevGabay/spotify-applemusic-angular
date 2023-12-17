@@ -38,7 +38,7 @@ const Transfer = () => {
           setDestinationStreamer(streamer);
         });
       } else {
-        startAuth(destination);
+        startAuth(destination, "transfer");
       }
     });
   }, []);

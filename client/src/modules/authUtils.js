@@ -3,14 +3,18 @@ import { login } from "../redux/actions/authActions";
 import axios from "axios";
 
 export function startAuth(streamer, redirect = "playlists") {
-  window.location.href = `https://spotify-applemusic.vercel.app/api/auth?streamer=${streamer}&redirect=${redirect}`;
+  console.log(process.env.REACT_APP_BACKEND_API);
+  const baseUrl = process.env.REACT_APP_BACKEND_API;
+  const queryString = `?streamer=${streamer}&redirect=${redirect}`;
+  const url = baseUrl + "/auth" + queryString;
+  window.location.href = url;
 }
 
 export async function isAuthed(streamer) {
   console.log("entering isAuthed");
   try {
     console.log("entering try");
-    const response = await axios.get(`https://spotify-applemusic.vercel.app/api/${streamer}/token`, {
+    const response = await axios.get(`${process.env.REACT_APP_BACKEND_API}/${streamer}/token`, {
       withCredentials: true,
     });
     console.log(response);

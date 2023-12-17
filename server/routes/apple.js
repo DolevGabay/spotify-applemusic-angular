@@ -13,7 +13,7 @@ router.get("/auth", async (req, res) => {
   const redirect = req.session.redirect;
   req.session[STREAMER] = { token: accessToken };
   console.log('Apple Auth', req.session.id);
-  res.redirect(`${process.env.FRONTEND_BASE_URI}/${redirect}`);
+  res.redirect(`https://${process.env.FRONTEND_BASE_URI}/${redirect}`);
 });
 
 router.get("/token", async (req, res) => {

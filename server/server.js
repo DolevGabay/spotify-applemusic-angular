@@ -24,7 +24,7 @@ if (process.env.NODE_ENV === 'production') {
   });
   redisClient.on('error', (err) => console.log('Redis Client Error', err));
   redisClient.connect();
-  
+
   app.set('trust proxy', 1);
   app.use(session({
     secret: 'matandolev', // Replace with your secret key
@@ -33,6 +33,7 @@ if (process.env.NODE_ENV === 'production') {
     cookie: {
       secure: true,
       httpOnly: true,
+      domain: `.${process.env.FRONTEND_BASE_URI}`,
       sameSite: 'none',
       maxAge: 60 * 60 * 24 * 1000
     },

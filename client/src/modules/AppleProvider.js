@@ -194,9 +194,8 @@ class AppleProvider {
     if (!this.isLoggedIn()) {
       try {
         console.log('loadProfile try');
-        this.instance.getInstance().authorize().then((res) => {
-            console.log('result', res);
-        });
+        const res = await this.instance.getInstance().authorize();
+        console.log('res', res);
         console.log('loaded', this.instance.getInstance().musicUserToken);
         this.header = {
             Authorization: `Bearer ${this.accessToken}`,

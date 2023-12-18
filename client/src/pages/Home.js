@@ -165,7 +165,7 @@ const Home = () => {
                         </div>
                       </div>
                       <div className="d-flex" style={{ marginLeft: '11px' }}>
-                        <img className="rounded-circle flex-shrink-0 me-3 fit-cover" width="50" height="50" src="assets/img/team/avatar2.jpg" alt="Dolev Gabay" />
+                        <img className="rounded-circle flex-shrink-0 me-3 fit-cover" width="50" height="50" src="assets/img/team/dolev.jpg" alt="Dolev Gabay" />
                         <div>
                           <p className="fw-bold text-primary mb-0">Dolev Gabay</p>
                           <p className="text-muted mb-0">Cs Student</p>

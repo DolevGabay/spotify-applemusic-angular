@@ -197,16 +197,17 @@ class AppleProvider {
         const res = await this.instance.getInstance().authorize();
         console.log('res', res);
         console.log('loaded', this.instance.getInstance().musicUserToken);
-        this.header = {
-            Authorization: `Bearer ${this.accessToken}`,
-            "Music-User-Token": this.getMusicInstance().musicUserToken,
-            "Content-Type": "application/json",
-          };
       } catch (error) {
         console.error("Error authorizing:", error);
         return;
       }
     }
+
+    this.header = {
+        Authorization: `Bearer ${this.accessToken}`,
+        "Music-User-Token": this.getMusicInstance().musicUserToken,
+        "Content-Type": "application/json",
+      };
   }
 
   async configure() {

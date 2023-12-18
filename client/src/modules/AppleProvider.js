@@ -189,7 +189,7 @@ class AppleProvider {
   }
 
   async loadProfile() {
-    this.configure();
+    await this.configure();
     console.log('loadProfile');
     if (!this.isLoggedIn()) {
       try {

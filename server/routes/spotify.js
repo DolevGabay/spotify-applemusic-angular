@@ -7,7 +7,7 @@ const CLIENT_ID = "19fa87bff4c74ef79f1a8af8608d1d87";
 const CLIENT_SECRET = "3c20d8cbaa0d4e69b882e18064cd00c7";
 const REDIRECT_URI = `https://${process.env.BACKEND_BASE_URI}/spotify/callback`;
 const SCOPE =
-  "user-read-private user-read-email playlist-read-private playlist-read-collaborative user-library-read user-top-read user-read-recently-played user-follow-read user-follow-modify user-read-playback-state user-modify-playback-state user-read-playback-position user-read-currently-playing playlist-read-private playlist-modify-private playlist-modify-public";
+  "user-read-private playlist-read-private playlist-read-collaborative user-library-read playlist-read-private playlist-modify-private playlist-modify-public";
 
 router.get("/auth", async (req, res) => {
   console.log('Auth', req.session.id);

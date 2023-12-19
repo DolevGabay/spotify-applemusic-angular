@@ -197,12 +197,6 @@ class AppleProvider {
         const res = await this.instance.getInstance().authorize();
         console.log('res', res);
         console.log('loaded', this.instance.getInstance().musicUserToken);
-        window.close();
-
-        // Refresh the parent window
-        if (window.opener) {
-          window.opener.location.reload();
-        }
       } catch (error) {
         console.error("Error authorizing:", error);
         return;

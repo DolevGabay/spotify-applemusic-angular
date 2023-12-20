@@ -190,17 +190,16 @@ class AppleProvider {
 
   async loadProfile() {
     await this.configure();
+
     console.log('Configured');
-    if (!this.isLoggedIn()) {
-      try {
+    try {
         console.log('loadProfile try');
         const res = await this.instance.getInstance().authorize();
         console.log('res', res);
         console.log('loaded', this.instance.getInstance().musicUserToken);
-      } catch (error) {
+    } catch (error) {
         console.error("Error authorizing:", error);
         return;
-      }
     }
 
     this.header = {
@@ -222,14 +221,6 @@ class AppleProvider {
 
   getMusicInstance() {
     return this.instance.getInstance();
-  }
-
-  isLoggedIn() {
-    try {
-      return this.getMusicInstance().isAuthorized;
-    } catch (error) {
-      return false;
-    }
   }
 }
 

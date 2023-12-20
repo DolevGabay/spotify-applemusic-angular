@@ -49,7 +49,7 @@ router.get("/callback", async (req, res) => {
       },
     }
   );
-
+  console.log('spotify token', tokenResponse.data.access_token)
   const accessToken = tokenResponse.data.access_token;
   req.session[STREAMER] = { token: accessToken };
   res.redirect(`https://${process.env.FRONTEND_BASE_URI}/${req.session.redirect}`);

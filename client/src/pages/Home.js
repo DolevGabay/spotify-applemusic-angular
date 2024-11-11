@@ -8,6 +8,7 @@ const Home = () => {
     const dispatch = useDispatch();
 
     const startTransfer = async (streamer) => {
+        console.log(streamer);
         dispatch(setSource(streamer));
         startAuth(streamer);
     }

@@ -3,9 +3,9 @@ const router = express.Router();
 const axios = require("axios");
 
 const STREAMER = "Spotify";
-const CLIENT_ID = "19fa87bff4c74ef79f1a8af8608d1d87";
-const CLIENT_SECRET = "3c20d8cbaa0d4e69b882e18064cd00c7";
-const REDIRECT_URI = `https://${process.env.BACKEND_BASE_URI}/spotify/callback`;
+const CLIENT_ID = "7e22f4017769493cb09cfe94a751d51c";
+const CLIENT_SECRET = "14a5a391ce36417a81b89ee9e4019c04";
+const REDIRECT_URI = `${process.env.BACKEND_BASE_URI}/spotify/callback`;
 const SCOPE =
   "user-read-private playlist-read-private playlist-read-collaborative user-library-read playlist-read-private playlist-modify-private playlist-modify-public";
 
@@ -52,7 +52,7 @@ router.get("/callback", async (req, res) => {
   console.log('spotify token', tokenResponse.data.access_token)
   const accessToken = tokenResponse.data.access_token;
   req.session[STREAMER] = { token: accessToken };
-  res.redirect(`https://${process.env.FRONTEND_BASE_URI}/${req.session.redirect}`);
+  res.redirect(`${process.env.FRONTEND_BASE_URI}/${req.session.redirect}`);
 });
 
 function generateRandomString(length) {

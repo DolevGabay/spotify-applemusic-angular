@@ -65,7 +65,7 @@ configureSession();
 
 // Cors
 const corsOptions = {
-  origin: `https://www.${process.env.FRONTEND_BASE_URI}`,
+  origin: `${process.env.FRONTEND_BASE_URI}`,
   credentials: true,
 };
 app.use(cors(corsOptions));

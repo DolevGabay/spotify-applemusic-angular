@@ -1,6 +1,10 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-import { appConfig } from './app/app.config';
+import { provideStore } from '@ngrx/store';
 import { AppComponent } from './app/app.component';
+import { appReducer } from './app/store/app.reducer';
 
-bootstrapApplication(AppComponent, appConfig)
-  .catch((err) => console.error(err));
+bootstrapApplication(AppComponent, {
+  providers: [
+    provideStore({ app: appReducer }), // Register the unified reducer
+  ]
+}).catch(err => console.error(err));

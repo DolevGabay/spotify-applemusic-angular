@@ -1,0 +1,14 @@
+<div
+  class="playlist-card "
+  [class.selected]="selected"
+  (click)="onCardClick()"
+>
+  <div class="card-content">
+    <img
+      [src]="playlist?.image"
+      [alt]="playlist?.name"
+      class="playlist-image"
+    />
+    <h3 class="playlist-title">{{ playlist?.name }}</h3>
+  </div>
+</div>

@@ -1,13 +1,19 @@
-// src/app/store/app.state.ts
 export interface AppState {
-    service: string | null;
-    streamer: string | null;
-    token: string | null;
-  }
-  
-  export const initialAppState: AppState = {
-    service: null,
-    streamer: null,
-    token: null,
+  originStreamer: string | null;
+  destinationStreamer: string | null;
+  tokens: {
+    Spotify: string | null;
+    Apple: string | null;
   };
-  
+  playlistsToTransfer: any[];
+}
+
+export const initialAppState: AppState = {
+  originStreamer: null,
+  destinationStreamer: null,
+  tokens: {
+    Spotify: null,
+    Apple: null
+  },
+  playlistsToTransfer: []
+};

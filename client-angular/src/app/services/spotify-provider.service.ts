@@ -1,9 +1,7 @@
-// src/app/services/spotify-provider.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { environment } from '../../environments/environment';
-import { from, Observable, of } from 'rxjs';
-import { catchError, concatMap, map, mergeMap } from 'rxjs/operators';
+import { from, Observable, of, firstValueFrom } from 'rxjs';
+import { catchError, concatMap, map, mergeMap, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -55,6 +53,7 @@ export class SpotifyProvider {
     }
   
     transferPlaylists(playlistsToTransfer: any[]): Observable<any[]> {
+        console.log('Transferring playlists:', playlistsToTransfer);
         let songsNotFoundReturn: any[] = [];
       
         return from(playlistsToTransfer).pipe(
@@ -86,7 +85,6 @@ export class SpotifyProvider {
           map(() => songsNotFoundReturn)
         );
       }
-      
   
     createPlaylist(name: string): Observable<string | null> {
       const CREATE_PLAYLIST_API = `https://api.spotify.com/v1/users/${this.userId}/playlists`;
@@ -137,18 +135,27 @@ export class SpotifyProvider {
       );
     }
   
-    loadProfile(): Observable<string | null> {
-      const PROFILE_API = "https://api.spotify.com/v1/me";
-  
-      return this.http.get<any>(PROFILE_API, { headers: this.header }).pipe(
-        map(data => {
-          this.userId = data.id;
-          return data.display_name;
-        }),
-        catchError(error => {
-          console.error('Failed to load profile:', error);
-          return of(null);
-        })
-      );
+    async loadProfile(): Promise<void> {
+        const PROFILE_API = "https://api.spotify.com/v1/me";
+      
+        try {
+          const data = await firstValueFrom(
+            this.http.get<any>(PROFILE_API, { headers: this.header }).pipe(
+              tap(response => console.log('Raw response:', response)), 
+              map(data => {
+                this.userId = data.id;
+                return data.display_name;
+              }),
+              catchError(error => {
+                console.error('Failed to load profile:', error.message || error); 
+                return of("Unknown User"); 
+              })
+            )
+          );
+          
+        } catch (error) {
+          console.error('Error in loadProfile:', error);
+        }
     }
+      
 }

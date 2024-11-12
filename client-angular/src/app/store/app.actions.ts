@@ -1,12 +1,21 @@
-// src/app/store/app.actions.ts
 import { createAction, props } from '@ngrx/store';
 
-export const startTransfer = createAction(
-  '[App] Start Transfer',
-  props<{ service: string }>()
+export const setOrigin = createAction(
+  '[App] Set Origin',
+  props<{ originStreamer: string }>()
 );
 
-export const login = createAction(
-  '[App] Login',
-  props<{ streamer: string; token: string }>()
+export const setDestination = createAction(
+  '[App] Set Destination',
+  props<{ destinationStreamer: string }>()
+);
+
+export const setTokens = createAction(
+  '[Auth] Set Tokens',
+  props<{ tokens: Partial<{ Spotify: string; Apple: string }> }>()
+);
+
+export const setPlaylistsToTransfer = createAction(
+  '[App] Set Playlists To Transfer',
+  props<{ playlistsToTransfer: any[] }>()
 );

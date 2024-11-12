@@ -1,10 +1,26 @@
-// src/app/store/app.reducer.ts
 import { createReducer, on } from '@ngrx/store';
-import { startTransfer, login } from './app.actions';
-import { AppState, initialAppState } from './app.state';
+import { setOrigin, setDestination, setTokens, setPlaylistsToTransfer } from './app.actions';
+import { initialAppState } from './app.state';
 
 export const appReducer = createReducer(
   initialAppState,
-  on(startTransfer, (state, { service }) => ({ ...state, service })),
-  on(login, (state, { streamer, token }) => ({ ...state, streamer, token }))
+  on(setOrigin, (state, { originStreamer }) => ({
+    ...state,
+    originStreamer
+  })),
+  on(setDestination, (state, { destinationStreamer }) => ({
+    ...state,
+    destinationStreamer
+  })),
+  on(setTokens, (state, { tokens }) => ({
+    ...state,
+    tokens: {
+      ...state.tokens,
+      ...tokens, 
+    },
+  })),
+  on(setPlaylistsToTransfer, (state, { playlistsToTransfer }) => ({
+    ...state,
+    playlistsToTransfer
+  }))
 );

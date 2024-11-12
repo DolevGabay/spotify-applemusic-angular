@@ -1,19 +1,14 @@
-// src/app/services/apple-provider.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { environment } from '../../environments/environment';
 import { from, Observable, of } from 'rxjs';
 import { catchError, concatMap, map, mergeMap } from 'rxjs/operators';
+
 @Injectable({
   providedIn: 'root'
 })
 export class AppleProvider {
     private accessToken: string = "";
     private instance = (window as any).MusicKit;
-    private provider = 'Apple';
-    private name = '';
-    private playlists = [];
-    private PlaylistSongsToTransfer = [];
     private header: HttpHeaders = new HttpHeaders();
   
     constructor(private http: HttpClient) {}
@@ -31,21 +26,22 @@ export class AppleProvider {
     }
   
     loadPlaylists(): Observable<any[]> {
-      const apiEndpoint = 'https://api.music.apple.com/v1/me/library/playlists';
-      return this.http.get<any>(apiEndpoint, { headers: this.header }).pipe(
-        map(response => response.data.map((playlist: any) => ({
-          name: playlist.attributes.name,
-          id: playlist.id,
-          image: playlist.attributes.artwork
-            ? playlist.attributes.artwork.url.replace('{w}', '300').replace('{h}', '300')
-            : 'https://community.spotify.com/t5/image/serverpage/image-id/25294i2836BD1C1A31BDF2?v=v2'
-        }))),
-        catchError(error => {
-          console.error('Error loading playlists:', error);
-          return of([]);
-        })
-      );
-    }
+        const apiEndpoint = 'https://api.music.apple.com/v1/me/library/playlists';
+        console.log('header:', this.getHeaders());
+        return this.http.get<any>(apiEndpoint, { headers: this.getHeaders() }).pipe(
+          map(response => response.data.map((playlist: any) => ({
+            name: playlist.attributes.name,
+            id: playlist.id,
+            image: playlist.attributes.artwork
+              ? playlist.attributes.artwork.url.replace('{w}', '300').replace('{h}', '300')
+              : 'https://community.spotify.com/t5/image/serverpage/image-id/25294i2836BD1C1A31BDF2?v=v2'
+          }))),
+          catchError(error => {
+            console.error('Error loading playlists:', error);
+            return of([]);
+          })
+        );
+      }      
   
     getSongsFromPlaylist(playlistId: string): Observable<any[]> {
       const apiUrl = `https://api.music.apple.com/v1/me/library/playlists/${playlistId}/tracks`;
@@ -143,32 +139,44 @@ export class AppleProvider {
       );
     }
   
-    loadProfile(): Observable<string | null> {
-      return this.configure().pipe(
-        map(() => {
-          this.header = new HttpHeaders({
-            Authorization: `Bearer ${this.accessToken}`,
+    async loadProfile(): Promise<void> {
+        await this.configure();
+    
+        console.log('Configured');
+        try {
+          const res = await this.instance.getInstance().authorize();
+        } catch (error) {
+          console.error('Error authorizing:', error);
+          return;
+        }
+    
+        this.header = new HttpHeaders({
+            'Authorization': `Bearer ${this.accessToken}`,
             'Music-User-Token': this.getMusicInstance().musicUserToken,
-            'Content-Type': 'application/json'
-          });
-          return this.instance.getInstance().musicUserToken;
-        }),
-        catchError(error => {
-          console.error('Error loading profile:', error);
-          return of(null);
-        })
-      );
+            'Content-Type': 'application/json',
+          });          
     }
   
-    configure(): Observable<void> {
-      this.instance.configure({
+    async configure(): Promise<void> {
+    this.instance.configure({
         developerToken: this.accessToken,
-        app: { name: 'MDsolutions', build: '1.0' }
-      });
-      return of();
+        app: {
+        name: 'MDsolutions',
+        build: '1.0',
+        },
+    });
     }
-  
-    getMusicInstance(): any {
-      return this.instance.getInstance();
+
+    getMusicInstance(){
+    return this.instance.getInstance();
     }
+
+    private getHeaders(): HttpHeaders {
+        return new HttpHeaders({
+          'Authorization': `Bearer ${this.accessToken}`,
+          'Music-User-Token': this.getMusicInstance().musicUserToken || '',
+          'Content-Type': 'application/json',
+        });
+      }
+      
 }

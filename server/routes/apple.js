@@ -17,8 +17,8 @@ router.get("/auth", async (req, res) => {
 });
 
 router.get("/token", async (req, res) => {
-  console.log('Token', req.session.id);
   const token = req.session[STREAMER]?.token;
+  console.log('apple token', token);
   if (!token) {
     res.status(404).json("Streamer did not auth yet.");
     return;

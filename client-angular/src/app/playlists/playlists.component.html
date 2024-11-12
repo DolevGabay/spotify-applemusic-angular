@@ -1,1 +1,36 @@
-<p>playlists works!</p>
+<div>
+    <div class="header">
+      <div *ngIf="sourcePlaylists.length > 0">
+        <h2>Please choose the playlist you want to transfer</h2>
+      </div>
+    </div>
+  
+    <div *ngIf="isLoading" class="loading-indicator">
+      <div class="loading-spinner"></div>
+    </div>
+  
+    <div *ngIf="!isLoading" class="big-playlists-container">
+      <div class="playlist-container">
+        <div class="playlist-cards">
+          <ng-container *ngFor="let playlist of sourcePlaylists; index as i">
+            <app-playlist-card
+              [playlist]="playlist"
+              [selected]="selectedPlaylists.has(i)"
+              (playlistClicked)="onPlaylistClick(i)"
+            ></app-playlist-card>
+          </ng-container>
+        </div>  
+      </div>
+    </div>
+  
+    <div *ngIf="sourcePlaylists.length > 0" style="text-align: center; margin-right: 20px;">
+      <button
+        class="btn btn-primary shadow"
+        (click)="onTransferClick()"
+        [disabled]="selectedPlaylists.size <= 0"
+      >
+        Transfer
+      </button>
+    </div>
+  </div>
+  

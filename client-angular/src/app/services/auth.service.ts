@@ -1,9 +1,8 @@
-// src/app/services/auth.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
-import { login } from './store/app.actions'; 
-import { environment } from '../environments/environment';
+import { setTokens } from '../store/app.actions'; 
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +12,7 @@ export class AuthService {
 
   constructor(private http: HttpClient, private store: Store) {}
 
-  startAuth(streamer: string, redirect: string = 'playlists') {
+  startAuth(streamer: String, redirect: string = 'playlists') {
     const queryString = `?streamer=${streamer}&redirect=${redirect}`;
     const url = `${this.baseUrl}/auth${queryString}`;
     window.location.href = url; 
@@ -27,7 +26,15 @@ export class AuthService {
   
       if (response && response.token) {
         const { token } = response;
-        this.store.dispatch(login({ streamer, token }));
+  
+        this.store.dispatch(
+          setTokens({
+            tokens: {
+              [streamer]: token
+            }
+          })
+        );
+  
         return true;
       } else {
         console.error("No token found in response");
@@ -37,5 +44,6 @@ export class AuthService {
       console.error(error);
       return false;
     }
-  }  
+  }
+   
 }

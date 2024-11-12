@@ -1,0 +1,29 @@
+<div>
+    <div *ngIf="isLoading">
+      <div class="loading-indicator">
+        <div class="loading-spinner"></div>
+      </div>
+    </div>
+  
+    <div *ngIf="!isLoading" class="thank-you-container">
+      <h1 class="thank-you-title">Transfer is done</h1>
+      <h2 class="thank-you-subtitle">
+        Thanks for using Playlists Transfer!
+      </h2>
+      <div *ngIf="songsNotFound.length > 0">
+        <h6 class="error-message">
+          There was a problem with some songs, for more info
+        </h6>
+        <h3 class="error-message">Songs not found:</h3>
+        <div *ngFor="let playlist of songsNotFound; let i = index">
+          <h3>{{ playlist.playlistName }}</h3>
+          <ul>
+            <li *ngFor="let song of playlist.songsNotFound; let j = index">
+              {{ song.name }}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  

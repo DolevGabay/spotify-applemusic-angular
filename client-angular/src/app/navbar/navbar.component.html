@@ -15,13 +15,19 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navcol-1">
-          <ul class="navbar-nav mx-auto">
-            <li class="nav-item"><a class="nav-link active" routerLink="/" routerLinkActive="active">Home</a></li>
-            <li class="nav-item"><a class="nav-link" routerLink="/#about" routerLinkActive="active">About</a></li>
-            <li class="nav-item"><a class="nav-link" routerLink="/#services" routerLinkActive="active">Services</a></li>
-          </ul>
-          <a class="btn btn-primary shadow" role="button" routerLink="/Contact">Contact Us</a>
-        </div>
+            <ul class="navbar-nav mx-auto">
+              <li class="nav-item">
+                <a class="nav-link" (click)="navigateTo('/')">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" (click)="navigateTo('/#about')">About</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" (click)="navigateTo('/#services')">Services</a>
+              </li>
+            </ul>
+            <a class="btn btn-primary shadow" role="button" (click)="navigateTo('/Contact')">Contact Us</a>
+          </div>          
       </div>
     </nav>
   </div>

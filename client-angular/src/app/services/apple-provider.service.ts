@@ -2,11 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { from, Observable, of } from 'rxjs';
 import { catchError, concatMap, map, mergeMap } from 'rxjs/operators';
+import { MusicProvider } from './music-provider.interface';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AppleProvider {
+export class AppleProvider implements MusicProvider {
     private accessToken: string = "";
     private instance = (window as any).MusicKit;
     private header: HttpHeaders = new HttpHeaders();
@@ -65,7 +66,7 @@ export class AppleProvider {
             this.createPlaylist(playlist.name).pipe(
               concatMap(newPlaylistId => {
                 if (newPlaylistId) {
-                  return this.addSongsToApplePlaylist(newPlaylistId, playlist.songs).pipe(
+                  return this.addSongsToPlaylist(newPlaylistId, playlist.songs).pipe(
                     map(songsNotFound => {
                       if (songsNotFound && songsNotFound.length > 0) {
                         songsNotFoundReturn.push({
@@ -100,7 +101,7 @@ export class AppleProvider {
       );
     }
   
-    addSongsToApplePlaylist(playlistId: string, songs: any[]): Observable<any[]> {
+    addSongsToPlaylist(playlistId: string, songs: any[]): Observable<any[]> {
       let songsNotFound: any[] = [];
       songs.forEach(async (song) => {
         const songId = await this.searchTrackInApple(song.name, song.artist).toPromise();

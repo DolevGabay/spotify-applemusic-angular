@@ -4,6 +4,7 @@ import { SpotifyProvider } from './spotify-provider.service';
 import { AppleProvider } from './apple-provider.service';
 import { AppState } from '../store/app.state';
 import { firstValueFrom } from 'rxjs';
+import { MusicProvider } from './music-provider.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,7 @@ export class StreamerFactoryService {
     private appleProvider: AppleProvider
   ) {}
 
-  async getStreamer(streamer: String): Promise<SpotifyProvider | AppleProvider | null> {
+  async getStreamer(streamer: String): Promise<MusicProvider | null> {
     const state = await firstValueFrom(this.store.select('app'));
     const token = streamer === 'Spotify' ? state?.tokens.Spotify : state?.tokens.Apple;
 
@@ -24,7 +25,7 @@ export class StreamerFactoryService {
       return null;
     }
 
-    const provider = streamer === 'Spotify' ? this.spotifyProvider : this.appleProvider;
+    const provider: MusicProvider = streamer === 'Spotify' ? this.spotifyProvider : this.appleProvider;
     provider.initialize(token);
     await provider.loadProfile();
     return provider;

@@ -2,14 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { from, Observable, of, firstValueFrom } from 'rxjs';
 import { catchError, concatMap, map, mergeMap, tap } from 'rxjs/operators';
+import { MusicProvider } from './music-provider.interface';
 
 @Injectable({
   providedIn: 'root'
 })
-export class SpotifyProvider {
+export class SpotifyProvider implements MusicProvider {
     private accessToken: string = "";
     private header: HttpHeaders = new HttpHeaders();
-    private provider = "Spotify";
     private userId = "";
   
     constructor(private http: HttpClient) {}
@@ -61,7 +61,7 @@ export class SpotifyProvider {
             this.createPlaylist(playlist.name).pipe(
               concatMap(newPlaylistId => {
                 if (newPlaylistId) {
-                  return this.addTracksToPlaylist(newPlaylistId, playlist.songs).pipe(
+                  return this.addSongsToPlaylist(newPlaylistId, playlist.songs).pipe(
                     map(songsNotFound => {
                       if (songsNotFound.length > 0) {
                         console.log('Playlist created! Songs not found:', songsNotFound);
@@ -98,7 +98,7 @@ export class SpotifyProvider {
       );
     }
   
-    addTracksToPlaylist(playlistId: string, songs: any[]): Observable<any[]> {
+    addSongsToPlaylist(playlistId: string, songs: any[]): Observable<any[]> {
         const ADD_TRACKS_API = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
         let songsNotFound: any[] = [];
       

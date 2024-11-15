@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
-import { AppState } from '../store/app.state';
-import { selectTransferData, selectdestinationStreamer } from '../store/app.selectors';
-import { AuthService } from '../services/auth.service';
-import { StreamerFactoryService } from '../services/streamer-factory.service';
+import { AppState } from '../../store/app.state';
+import { selectTransferData, selectdestinationStreamer } from '../../store/app.selectors';
+import { AuthService } from '../../services/auth.service';
+import { StreamerFactoryService } from '../../services/streamer-factory.service';
 import { CommonModule } from '@angular/common'; 
 
 @Component({

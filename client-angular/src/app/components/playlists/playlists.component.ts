@@ -2,13 +2,13 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
-import { StreamerFactoryService } from '../services/streamer-factory.service';
-import { AppState } from '../store/app.state';
-import { AuthService } from '../services/auth.service';
-import { selectOriginStreamer, selectAppState } from '../store/app.selectors';
+import { StreamerFactoryService } from '../../services/streamer-factory.service';
+import { AppState } from '../../store/app.state';
+import { AuthService } from '../../services/auth.service';
+import { selectOriginStreamer, selectAppState } from '../../store/app.selectors';
 import { PlaylistCardComponent } from '../playlist-card/playlist-card.component';
 import { CommonModule } from '@angular/common';
-import { setPlaylistsToTransfer } from '../store/app.actions';
+import { setPlaylistsToTransfer } from '../../store/app.actions';
 
 @Component({
   selector: 'app-playlists',

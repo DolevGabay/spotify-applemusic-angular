@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { setOrigin, setDestination } from '../store/app.actions';
-import { AppState } from '../store/app.state';
-import { AuthService } from '../services/auth.service'; 
+import { setOrigin, setDestination } from '../../store/app.actions';
+import { AppState } from '../../store/app.state';
+import { AuthService } from '../../services/auth.service'; 
 import { firstValueFrom } from 'rxjs';
-import { selectAppState } from '../store/app.selectors';
+import { selectAppState } from '../../store/app.selectors';
 
 @Component({
   selector: 'app-home',

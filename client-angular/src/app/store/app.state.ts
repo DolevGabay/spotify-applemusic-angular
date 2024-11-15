@@ -2,8 +2,7 @@ export interface AppState {
   originStreamer: string | null;
   destinationStreamer: string | null;
   tokens: {
-    Spotify: string | null;
-    Apple: string | null;
+    [key: string]: string | null; // Allows any string key
   };
   playlistsToTransfer: any[];
 }

@@ -16,9 +16,9 @@ export class StreamerFactoryService {
     private appleProvider: AppleProvider
   ) {}
 
-  async getStreamer(streamer: String): Promise<MusicProvider | null> {
+  async getStreamer(streamer: string): Promise<MusicProvider | null> {
     const state = await firstValueFrom(this.store.select('app'));
-    const token = streamer === 'Spotify' ? state?.tokens.Spotify : state?.tokens.Apple;
+    const token = state.tokens[streamer];
 
     if (!token) {
       console.error(`Token for ${streamer} not found`);

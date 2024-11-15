@@ -78,6 +78,8 @@ export class PlaylistsComponent implements OnInit, OnDestroy {
       }))
     );
 
+    console.log('Transfer data:', transferData);
+      
     this.store.dispatch(setPlaylistsToTransfer({ playlistsToTransfer: transferData }));
     this.router.navigate(['/transfer']);
   }

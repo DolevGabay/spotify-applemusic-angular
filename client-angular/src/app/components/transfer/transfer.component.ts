@@ -43,11 +43,13 @@ export class TransferComponent implements OnInit {
       const authed = await this.authService.isAuthed(this.destination);
 
       if (authed) {
+        console.log('Destination is authed');
         this.destinationStreamer = await this.streamerFactory.getStreamer(this.destination);
         if (this.destinationStreamer) {
           this.transferPlaylists();
         }
       } else {
+        console.log('Destination is not authed');
         this.authService.startAuth(this.destination, 'transfer');
       }
     } catch (error) {
